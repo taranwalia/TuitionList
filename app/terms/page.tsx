@@ -39,8 +39,7 @@ export default function TermsPage() {
         standards, comply with the law, or reduce risk.
       </p>
       <p>
-        Basic tutor profiles and parent enquiries are free at launch. Future paid features may be introduced separately, but any such features will
-        be optional and explained before use.
+        Basic tutor profiles and parent enquiries are free. TuitionList does not charge commission, parent finder fees, or paid listing fees.
       </p>
     </StaticPage>
   );

@@ -44,8 +44,8 @@ Do not add the following features unless explicitly requested:
 
 ## Business rules
 
-- Basic tutor profiles are free at launch.
-- Parent enquiries are free at launch.
+- Basic tutor profiles are free.
+- Parent enquiries are free.
 - TuitionList does not charge commission.
 - TuitionList does not charge parent finder's fees.
 - Tutor profiles must be approved by admin before appearing publicly.

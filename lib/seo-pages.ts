@@ -133,7 +133,7 @@ export const staticSeoPages: SeoPage[] = [
       {
         heading: "For tutors",
         body:
-          "Tutors, teachers, and tuition providers can create free profiles at launch. There is no commission, no parent finder fee, and no paid listings at launch."
+          "Tutors, teachers, and tuition providers can create free profiles. There is no commission, no parent finder fee, and no paid listings."
       }
     ],
     links: nationalSeoLinks
@@ -141,18 +141,18 @@ export const staticSeoPages: SeoPage[] = [
   {
     path: "/free-tutor-directory-uk",
     title: "Free Tutor Directory UK | TuitionList",
-    description: "TuitionList is a free UK tutor directory at launch, helping tutors stay visible and helping parents find tuition support.",
+    description: "TuitionList is a free UK tutor directory, helping tutors stay visible and helping parents find tuition support.",
     h1: "Free tutor directory UK",
     intro:
-      "TuitionList is free at launch for basic tutor profiles and parent enquiries, with no commission and no parent finder fees.",
+      "TuitionList is free for basic tutor profiles and parent enquiries, with no commission and no parent finder fees.",
     sections: [
       {
-        heading: "Free at launch",
+        heading: "Free tutor directory",
         body:
           "Tutors and tuition providers can create a profile for free. Parents, carers, and students can search and send enquiries without paying finder fees."
       },
       {
-        heading: "No paid listings at launch",
+        heading: "No paid listings",
         body:
           "TuitionList is focused on simple tutor discovery. Paid featured listings, subscriptions, bookings, and payments are not part of the MVP."
       }

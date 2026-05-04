@@ -2,7 +2,7 @@
 
 TuitionList is a free UK tutor directory MVP. It helps independent tutors, teachers and tuition providers create searchable online profiles so parents can find and contact them.
 
-TuitionList is a directory, not a tutoring agency. It does not employ tutors, take commission, charge parent finder fees or process lesson payments at launch.
+TuitionList is a directory, not a tutoring agency. It does not employ tutors, take commission, charge parent finder fees or process lesson payments.
 
 ## Tech Stack
 

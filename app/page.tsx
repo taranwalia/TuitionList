@@ -8,21 +8,21 @@ const parentBenefits = [
   "Search tutors by subject, level and location",
   "Contact tutors directly through enquiry forms",
   "View qualifications, experience, rates and DBS status",
-  "No parent finder's fee at launch"
+  "No parent finder's fee"
 ];
 
 const tutorBenefits = [
   "Create a free profile",
   "Receive parent enquiries",
   "No commission on lessons",
-  "No paid listings at launch",
+  "No paid listings",
   "Suitable for tutors, teachers and tuition centres"
 ];
 
 export const metadata: Metadata = {
   title: "TuitionList | Free UK Tutor Directory",
   description:
-    "Find tutors across the UK for free. TuitionList helps parents, carers, and students discover independent tutors and tuition providers with no commission or parent finder fees at launch.",
+    "Find tutors across the UK for free. TuitionList helps parents, carers, and students discover independent tutors and tuition providers with no commission or parent finder fees.",
   alternates: {
     canonical: "/"
   }
@@ -35,7 +35,7 @@ export default function HomePage() {
     name: "TuitionList",
     url: "https://tuitionlist.co.uk",
     logo: "https://tuitionlist.co.uk/brand/tuitionlist-logo.png",
-    description: "A free UK tutor directory at launch for independent tutors, teachers, tuition providers, parents, carers, and students."
+    description: "A free UK tutor directory for independent tutors, teachers, tuition providers, parents, carers, and students."
   };
 
   const websiteJsonLd = {
@@ -73,7 +73,7 @@ export default function HomePage() {
               </LinkButton>
             </div>
             <div className="mt-8 grid gap-3 text-sm text-slate-700 sm:grid-cols-3">
-              {["No commission", "No finder fees", "No paid listings at launch"].map((item) => (
+              {["No commission", "No finder fees", "No paid listings"].map((item) => (
                 <span key={item} className="inline-flex items-center gap-2">
                   <CheckCircle2 className="size-4 text-leaf-700" aria-hidden />
                   {item}

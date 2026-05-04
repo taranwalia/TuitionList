@@ -31,7 +31,7 @@ export default function DisclaimerPage() {
         experience, insurance, safeguarding training, lesson arrangements, online safety measures, and any other information relevant to their needs.
       </p>
       <p>
-        TuitionList does not process lesson payments at launch. Any lesson arrangements, fees, cancellations, refunds, safeguarding arrangements, or
+        TuitionList does not process lesson payments. Any lesson arrangements, fees, cancellations, refunds, safeguarding arrangements, or
         disputes are between the parent, carer, student, tutor, or tuition provider directly.
       </p>
     </StaticPage>

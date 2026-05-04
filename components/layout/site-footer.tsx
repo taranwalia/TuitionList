@@ -22,7 +22,7 @@ export function SiteFooter() {
           <div>
             <BrandLogo imageClassName="h-9 w-36" />
             <p className="mt-1 max-w-2xl text-sm text-slate-600">
-              A free UK tutor directory at launch, built to help tutors stay visible and parents, carers, and students find support.
+              A free UK tutor directory built to help tutors stay visible and parents, carers, and students find support.
             </p>
           </div>
           <nav className="flex flex-wrap gap-4 text-sm font-medium text-slate-600">

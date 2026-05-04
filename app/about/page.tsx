@@ -3,7 +3,7 @@ import { StaticPage } from "@/components/static-page";
 
 export const metadata: Metadata = {
   title: "About TuitionList",
-  description: "Learn about TuitionList, a free UK tutor directory at launch for independent tutors, teachers, tuition providers, and families.",
+  description: "Learn about TuitionList, a free UK tutor directory for independent tutors, teachers, tuition providers, and families.",
   alternates: { canonical: "/about" }
 };
 
@@ -15,8 +15,7 @@ export default function AboutPage() {
         students a simple way to find tuition support.
       </p>
       <p>
-        The platform is designed as a free UK tutor directory at launch, with no lesson commission, no parent finder fees, and no paid listings at
-        launch.
+        The platform is designed as a free UK tutor directory, with no lesson commission, no parent finder fees, and no paid listings.
       </p>
       <p>
         TuitionList is an online directory only. Tutors and tuition providers listed on the platform are independent providers and are not employed,
