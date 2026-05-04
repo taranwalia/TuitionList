@@ -61,8 +61,8 @@ const profileSelect = `
 type RawTutor = Omit<TutorProfile, "subjects" | "levels" | "checks" | "qualifications"> & {
   checks?: TutorProfile["checks"][] | TutorProfile["checks"] | null;
   qualifications?: TutorProfile["qualifications"] | null;
-  tutor_subjects?: { subjects: { name: string } | { name: string }[] | null }[] | null;
-  tutor_levels?: { levels: { name: string } | { name: string }[] | null }[] | null;
+  tutor_subjects?: { subjects: { name: string } | null }[] | null;
+  tutor_levels?: { levels: { name: string } | null }[] | null;
 };
 
 type PublicCheckRow = NonNullable<TutorProfile["checks"]> & {
@@ -74,14 +74,9 @@ function mapRawTutor(row: RawTutor): TutorProfile {
     ...row,
     checks: Array.isArray(row.checks) ? row.checks[0] : row.checks ?? undefined,
     qualifications: row.qualifications ?? [],
-    subjects: row.tutor_subjects?.flatMap((item) => namesFromRelation(item.subjects)) ?? [],
-    levels: row.tutor_levels?.flatMap((item) => namesFromRelation(item.levels)) ?? []
+    subjects: (row.tutor_subjects?.map((item) => item.subjects?.name).filter(Boolean) as string[] | undefined) ?? [],
+    levels: (row.tutor_levels?.map((item) => item.levels?.name).filter(Boolean) as string[] | undefined) ?? []
   };
-}
-
-function namesFromRelation(relation: { name: string } | { name: string }[] | null) {
-  if (!relation) return [];
-  return Array.isArray(relation) ? relation.map((item) => item.name).filter(Boolean) : [relation.name].filter(Boolean);
 }
 
 async function attachPublicChecks(tutors: TutorProfile[]) {
@@ -147,7 +142,7 @@ export async function getPublishedTutors(filters: DirectoryFilters = {}) {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).eq("status", "published");
     if (error) throw error;
-    const tutors = await attachAdminBadges(await attachPublicChecks((data as unknown as RawTutor[]).map(mapRawTutor)));
+    const tutors = await attachAdminBadges(await attachPublicChecks((data as RawTutor[]).map(mapRawTutor)));
     return filterTutors(tutors, filters);
   } catch {
     if (!canUseDemoData()) return [];
@@ -165,7 +160,7 @@ export async function getTutorBySlug(slug: string) {
       .eq("status", "published")
       .single();
     if (error) throw error;
-    return (await attachAdminBadges(await attachPublicChecks([mapRawTutor(data as unknown as RawTutor)])))[0];
+    return (await attachAdminBadges(await attachPublicChecks([mapRawTutor(data as RawTutor)])))[0];
   } catch {
     if (!canUseDemoData()) return null;
     return sampleTutors.find((tutor) => tutor.slug === slug && tutor.status === "published") ?? null;
@@ -177,7 +172,7 @@ export async function getAdminTutors() {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).order("created_at", { ascending: false });
     if (error) throw error;
-    return attachAdminContactDetails((data as unknown as RawTutor[]).map(mapRawTutor));
+    return attachAdminContactDetails((data as RawTutor[]).map(mapRawTutor));
   } catch {
     if (!canUseDemoData()) return [];
     return [
@@ -200,7 +195,7 @@ export async function getAdminTutorById(id: string) {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).eq("id", id).single();
     if (error) throw error;
-    return (await attachAdminContactDetails([mapRawTutor(data as unknown as RawTutor)]))[0];
+    return (await attachAdminContactDetails([mapRawTutor(data as RawTutor)]))[0];
   } catch {
     if (!canUseDemoData()) return null;
     return getAdminTutors().then((tutors) => tutors.find((tutor) => tutor.id === id) ?? null);
@@ -212,10 +207,8 @@ export async function getTutorDashboardProfile(userId: string) {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).eq("user_id", userId).maybeSingle();
     if (error) throw error;
-    return data ? mapRawTutor(data as unknown as RawTutor) : null;
+    return data ? mapRawTutor(data as RawTutor) : null;
   } catch {
     return null;
   }
 }
-    
-
