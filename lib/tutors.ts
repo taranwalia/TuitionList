@@ -1,3 +1,53 @@
+import { sampleTutors } from "@/lib/sample-data";
+import { canUseDemoData } from "@/lib/demo-mode";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { DirectoryFilters, TutorProfile } from "@/types/domain";
+import { filterTutors } from "@/lib/utils";
+
+const profileSelect = `
+  id,
+  user_id,
+  display_name,
+  slug,
+  town,
+  county,
+  postcode_area,
+  online_available,
+  in_person_available,
+  willing_to_travel,
+  min_rate,
+  max_rate,
+  short_bio,
+  long_bio,
+  experience,
+  profile_photo_url,
+  website_url,
+  linkedin_url,
+  phone,
+  show_phone,
+  show_email,
+  show_whatsapp,
+  status,
+  rejection_reason,
+  submitted_at,
+  approved_at,
+  created_at,
+  checks (
+    id_seen,
+    dbs_self_declared,
+    dbs_seen,
+    dbs_date,
+    qualification_seen,
+    reference_received,
+    insurance_self_declared,
+    insurance_confirmed,
+    safeguarding_self_declared,
+    safeguarding_seen,
+    safeguarding_date
+  ),
+  qualifications (
+    id,
     title,
     institution,
     year,
@@ -167,3 +217,5 @@ export async function getTutorDashboardProfile(userId: string) {
     return null;
   }
 }
+    
+
