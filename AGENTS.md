@@ -165,15 +165,32 @@ Rules:
 
 Use clean URLs and metadata.
 
-Important URL patterns:
+Important national URL patterns:
 
 - /
 - /find-a-tutor
 - /become-a-tutor
 - /tutor/[slug]
-- /tutors/[subject]
-- /tutors/[location]
-- /tutors/[subject]/[location]
+- /tutors
+- /online-tutors
+- /private-tutors
+- /tutor-directory-uk
+- /free-tutor-directory-uk
+- /subjects
+- /subjects/[subject]
+- /locations
+- /locations/[location]
+- /[subject]-tutors
+- /[subject]-tutors/[location]
+- /online-[subject]-tutors
+- /[level]-[subject]-tutors
+- /[level]-[subject]-tutors/[location]
+
+TuitionList is a national UK directory. Public wording and SEO content must not make the platform look focused only on Kent, Medway, Chatham, or any one local area.
+
+Avoid thin doorway pages. Dynamic subject, level, and location pages should be indexable only when they contain useful content or real approved tutor results. Pages with no useful content or no real tutor results should be `noindex`.
+
+Sitemaps must include approved tutor profiles only. They must exclude admin pages, tutor dashboard pages, login/signup pages, enquiry/account/settings pages, unpublished tutor profiles, and demo/sample profiles.
 
 Important title examples:
 

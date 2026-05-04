@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "Contact TuitionList",
+  description: "Contact TuitionList for launch enquiries, tutor support, profile review questions, or platform safeguarding concerns.",
+  alternates: { canonical: "/contact" }
+};
 
 export default function ContactPage() {
   return (

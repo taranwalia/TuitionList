@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "Terms and Conditions",
+  description: "Read the TuitionList terms and conditions for using the UK tutor directory.",
+  alternates: { canonical: "/terms" }
+};
 
 export default function TermsPage() {
   return (

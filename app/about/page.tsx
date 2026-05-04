@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "About TuitionList",
+  description: "Learn about TuitionList, a free UK tutor directory at launch for independent tutors, teachers, tuition providers, and families.",
+  alternates: { canonical: "/about" }
+};
 
 export default function AboutPage() {
   return (

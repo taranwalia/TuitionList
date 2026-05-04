@@ -6,7 +6,10 @@ import type { DirectoryFilters } from "@/types/domain";
 
 export const metadata: Metadata = {
   title: "Find a Tutor for Free",
-  description: "Search free tutor profiles by subject, level, location, online availability and hourly rate."
+  description: "Search independent tutors and tuition providers by subject, level, location, tuition type, and rate on TuitionList.",
+  alternates: {
+    canonical: "/find-a-tutor"
+  }
 };
 
 export default async function FindTutorPage({
@@ -35,7 +38,8 @@ export default async function FindTutorPage({
         <div>
           <h1 className="text-4xl font-bold text-navy-900">Find a tutor for free</h1>
           <p className="mt-3 max-w-3xl leading-7 text-slate-700">
-            Search published tutor profiles. TuitionList is a directory, so parents should complete their own checks before hiring a tutor.
+            Search published tutor and tuition provider profiles across the UK. TuitionList is a directory, so parents, carers, and students should
+            complete their own checks before arranging tuition.
           </p>
         </div>
         <SearchBox compact />

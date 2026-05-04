@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
 
 export const metadata: Metadata = {
-  title: "Safeguarding Information"
+  title: "Safeguarding Information",
+  description: "Safeguarding information for parents, carers, students, tutors, and tuition providers using TuitionList.",
+  alternates: { canonical: "/safeguarding" }
 };
 
 export default function SafeguardingPage() {

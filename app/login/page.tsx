@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { LogIn } from "lucide-react";
 import { signIn } from "@/app/actions/auth";
 import { Button, Field, LinkButton, Panel, inputClass } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Login",
+  robots: { index: false, follow: false }
+};
 
 export default async function LoginPage({
   searchParams

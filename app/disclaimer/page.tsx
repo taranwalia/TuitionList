@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "Disclaimer",
+  description: "Read the TuitionList directory-only disclaimer for tutors, tuition providers, parents, carers, and students.",
+  alternates: { canonical: "/disclaimer" }
+};
 
 export default function DisclaimerPage() {
   return (

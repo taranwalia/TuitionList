@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { UserRoundPlus } from "lucide-react";
 import { signUpTutor } from "@/app/actions/auth";
 import { Button, Field, LinkButton, Panel, inputClass } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Tutor Sign Up",
+  robots: { index: false, follow: false }
+};
 
 export default async function SignupPage({
   searchParams

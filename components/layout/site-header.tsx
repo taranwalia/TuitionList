@@ -1,4 +1,5 @@
 import { LogIn, LogOut, Search } from "lucide-react";
+import Link from "next/link";
 import { signOut } from "@/app/actions/auth";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { Button, LinkButton } from "@/components/ui";
@@ -6,6 +7,8 @@ import { getCurrentUserSummary } from "@/lib/auth";
 
 const navItems = [
   ["Find a Tutor", "/find-a-tutor"],
+  ["Online Tutors", "/online-tutors"],
+  ["Subjects", "/subjects"],
   ["Become a Tutor", "/become-a-tutor"],
   ["How It Works", "/how-it-works"],
   ["Safeguarding", "/safeguarding"]
@@ -18,14 +21,14 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <a href="/" className="flex items-center" aria-label="TuitionList home">
+        <Link href="/" className="flex items-center" aria-label="TuitionList home">
           <BrandLogo />
-        </a>
+        </Link>
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-700 md:flex">
           {navItems.map(([label, href]) => (
-            <a key={href} href={href} className="hover:text-navy-800">
+            <Link key={href} href={href} className="hover:text-navy-800">
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2">

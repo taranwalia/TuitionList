@@ -89,6 +89,31 @@ The blue tick badge means `Profile checks completed` and should only appear when
 
 The public `Admin` badge means the tutor profile belongs to a TuitionList admin account. It does not imply tutor quality or safeguarding suitability.
 
+## SEO Positioning
+
+TuitionList is a national UK tutor directory. Public copy, metadata, internal links and SEO pages should describe the platform as helping parents, carers and students find independent tutors, teachers and tuition providers across the UK.
+
+Important public SEO routes include:
+
+- `/tutors`
+- `/online-tutors`
+- `/private-tutors`
+- `/tutor-directory-uk`
+- `/free-tutor-directory-uk`
+- `/subjects`
+- `/locations`
+- `/subjects/[subject]`
+- `/locations/[location]`
+- `/[subject]-tutors`
+- `/[subject]-tutors/[location]`
+- `/online-[subject]-tutors`
+- `/[level]-[subject]-tutors`
+- `/[level]-[subject]-tutors/[location]`
+
+Avoid creating thin duplicated location or subject pages. Unknown or unsupported dynamic SEO pages should be `noindex` unless they contain substantial useful content or real approved tutor results.
+
+The sitemap should include public pages, useful SEO pages and approved tutor profiles only. It should exclude admin pages, tutor dashboard pages, login/signup pages, settings, enquiries, unpublished tutor profiles and demo/sample profiles.
+
 ## Storage
 
 - `profile-photos`: public bucket for tutor profile images. These images may appear on public tutor cards and profile pages.

@@ -4,7 +4,8 @@ import { LinkButton, Panel } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Enquiry Submitted | TuitionList",
-  description: "Your TuitionList tutor enquiry has been submitted."
+  description: "Your TuitionList tutor enquiry has been submitted.",
+  robots: { index: false, follow: false }
 };
 
 export default function EnquirySubmittedPage() {

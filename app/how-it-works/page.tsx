@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "How TuitionList Works",
+  description: "Learn how parents, carers, students, tutors, teachers, and tuition providers use TuitionList.",
+  alternates: { canonical: "/how-it-works" }
+};
 
 export default function HowItWorksPage() {
   return (

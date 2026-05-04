@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Read the TuitionList Privacy Policy, including UK GDPR, Data Protection Act 2018, user rights, retention, and data sharing.",
+  alternates: { canonical: "/privacy" }
+};
 
 export default function PrivacyPage() {
   return (

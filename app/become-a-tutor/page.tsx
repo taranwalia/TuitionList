@@ -4,7 +4,11 @@ import { LinkButton, Panel } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Create a Free Tutor Profile",
-  description: "Create your free tutor profile on TuitionList and submit it for review before it goes live."
+  description:
+    "Create a free tutor profile on TuitionList and receive parent enquiries with no commission, no finder fees, and no paid listings at launch.",
+  alternates: {
+    canonical: "/become-a-tutor"
+  }
 };
 
 export default function BecomeTutorPage() {

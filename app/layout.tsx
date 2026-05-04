@@ -10,12 +10,12 @@ export const metadata: Metadata = {
     template: "%s | TuitionList"
   },
   description:
-    "TuitionList is a free UK tutor directory helping parents find tutors and helping tutors stay visible online.",
+    "Find tutors across the UK for free. TuitionList helps parents, carers, and students discover independent tutors and tuition providers with no commission or parent finder fees at launch.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   openGraph: {
     title: "TuitionList | Free UK Tutor Directory",
     description:
-      "Search by subject, level, location, online availability and hourly rate. No commission or parent finder fees at launch.",
+      "Search independent tutors and tuition providers across the UK by subject, level, location, online availability, and hourly rate.",
     type: "website",
     images: ["/brand/tuitionlist-logo.png"]
   }
