@@ -6,6 +6,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function signUpErrorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : "";
+  if (message.toLowerCase().includes("rate limit")) {
+    return "Unable to send the signup email because the email rate limit has been reached. Please try again later or contact TuitionList.";
+  }
   if (message.toLowerCase().includes("already registered") || message.toLowerCase().includes("already been registered")) {
     return "An account with this email already exists. Please log in instead.";
   }
@@ -25,22 +28,38 @@ export async function signUpTutor(formData: FormData) {
 
   try {
     const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    if (!data.user) throw new Error("Supabase did not return a user for this signup.");
+    let userId: string | undefined;
 
     if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
       const adminSupabase = createSupabaseAdminClient();
+      const { data, error } = await adminSupabase.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true
+      });
+      if (error) throw error;
+      userId = data.user?.id;
+
+      if (!userId) throw new Error("Supabase did not return a user for this signup.");
+
       const { error: profileError } = await adminSupabase.from("profiles").upsert(
         {
-          auth_user_id: data.user.id,
+          auth_user_id: userId,
           role: "tutor",
           email
         },
         { onConflict: "auth_user_id" }
       );
       if (profileError) console.error("Unable to create tutor profile row after signup:", profileError.message);
+    } else {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      userId = data.user?.id;
+      if (!userId) throw new Error("Supabase did not return a user for this signup.");
     }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) throw signInError;
   } catch (error) {
     redirect(`/signup?error=${encodeURIComponent(signUpErrorMessage(error))}`);
   }
