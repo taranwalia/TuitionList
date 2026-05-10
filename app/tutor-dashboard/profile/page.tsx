@@ -4,6 +4,8 @@ import { requireUser } from "@/lib/auth";
 import { LEVELS, SUBJECTS } from "@/lib/constants";
 import { getTutorDashboardProfile } from "@/lib/tutors";
 
+export const dynamic = "force-dynamic";
+
 export default async function TutorProfileEditPage({
   searchParams
 }: {
@@ -15,6 +17,8 @@ export default async function TutorProfileEditPage({
   const error = Array.isArray(params.error) ? params.error[0] : params.error;
   const warning = Array.isArray(params.warning) ? params.warning[0] : params.warning;
   const qualification = profile?.qualifications?.[0];
+  const selectedSubjects = Array.isArray(profile?.subjects) ? profile.subjects.filter((subject) => SUBJECTS.includes(subject)) : [];
+  const selectedLevels = Array.isArray(profile?.levels) ? profile.levels.filter((level) => LEVELS.includes(level)) : [];
 
   return (
     <section className="bg-slate-50">
@@ -82,13 +86,13 @@ export default async function TutorProfileEditPage({
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Subjects taught">
-                <select name="subjects" multiple required className="min-h-48 rounded-md border border-slate-300 px-3 py-2" defaultValue={profile?.subjects ?? []}>
+                <select name="subjects" multiple required className="min-h-48 rounded-md border border-slate-300 px-3 py-2" defaultValue={selectedSubjects}>
                   {SUBJECTS.map((subject) => <option key={subject}>{subject}</option>)}
                 </select>
                 <p className="text-xs text-slate-500">Select at least one. Hold Ctrl on Windows to choose more than one.</p>
               </Field>
               <Field label="Levels taught">
-                <select name="levels" multiple required className="min-h-48 rounded-md border border-slate-300 px-3 py-2" defaultValue={profile?.levels ?? []}>
+                <select name="levels" multiple required className="min-h-48 rounded-md border border-slate-300 px-3 py-2" defaultValue={selectedLevels}>
                   {LEVELS.map((level) => <option key={level}>{level}</option>)}
                 </select>
                 <p className="text-xs text-slate-500">Select at least one. Hold Ctrl on Windows to choose more than one.</p>
