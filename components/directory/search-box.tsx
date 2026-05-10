@@ -1,10 +1,13 @@
 import { Search } from "lucide-react";
+import { TrackFormSubmit } from "@/components/analytics/track-event";
 import { LEVELS, SUBJECTS } from "@/lib/constants";
 import { Button, Field, inputClass } from "@/components/ui";
 
 export function SearchBox({ compact = false }: { compact?: boolean }) {
+  const formId = compact ? "compact-tutor-search" : "home-tutor-search";
   return (
-    <form action="/find-a-tutor" className="grid gap-3 rounded-lg border border-navy-100 bg-white p-4 shadow-lift md:grid-cols-5">
+    <form id={formId} action="/find-a-tutor" className="grid gap-3 rounded-lg border border-navy-100 bg-white p-4 shadow-lift md:grid-cols-5">
+      <TrackFormSubmit formId={formId} name="tutor_search_performed" properties={{ source: compact ? "compact_search_box" : "home_search_box" }} />
       <Field label="Subject">
         <select name="subject" className={inputClass} defaultValue="">
           <option value="">Any subject</option>

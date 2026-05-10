@@ -1,16 +1,19 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/constants";
-import { allIndexableSeoPages } from "@/lib/seo-pages";
+import { allIndexableSeoPages, priorityProgrammaticSeoPages } from "@/lib/seo-pages";
 import { getPublishedTutors } from "@/lib/tutors";
 
 const corePublicPages = [
   "/",
   "/find-a-tutor",
   "/become-a-tutor",
+  "/for-tutors",
+  "/for-parents",
   "/how-it-works",
   "/about",
   "/safeguarding",
   "/contact",
+  "/pricing",
   "/terms",
   "/privacy",
   "/disclaimer"
@@ -35,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: path === "/" ? 1 : 0.7
     })),
-    ...allIndexableSeoPages
+    ...[...allIndexableSeoPages, ...priorityProgrammaticSeoPages()]
       .filter((page) => page.index !== false)
       .map((page) => ({
         url: `${SITE_URL}${page.path}`,

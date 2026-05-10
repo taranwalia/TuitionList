@@ -71,7 +71,7 @@ export async function signUpTutor(formData: FormData) {
     redirect(`/signup?error=${encodeURIComponent(signUpErrorMessage(error))}`);
   }
 
-  redirect("/tutor-dashboard/profile");
+  redirect("/tutor-dashboard/profile?signup=completed");
 }
 
 export async function signIn(formData: FormData) {

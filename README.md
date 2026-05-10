@@ -96,10 +96,50 @@ TuitionList is a national UK tutor directory. Public copy, metadata, internal li
 Important public SEO routes include:
 
 - `/tutors`
+- `/tutors/[subject]`
+- `/tutors/[location]`
+- `/tutors/[location]/[subject]`
+- `/tutors/[location]/[subject]/[level]`
 - `/online-tutors`
+- `/online-tutors/[subject]`
+- `/online-tutors/[subject]/[level]`
 - `/private-tutors`
 - `/tutor-directory-uk`
+- `/free-tutor-directory`
 - `/free-tutor-directory-uk`
+- `/free-tutor-listing-uk`
+- `/advertise-as-a-tutor`
+- `/advertise-tutoring-services`
+- `/advertise-as-a-private-tutor`
+- `/advertise-tutoring-online`
+- `/advertise-tuition-services`
+- `/free-tutor-advertising`
+- `/free-tutor-listing`
+- `/free-tutor-profile`
+- `/list-as-a-tutor-for-free`
+- `/promote-my-tutoring-services`
+- `/get-tutoring-students`
+- `/find-tutoring-students`
+- `/private-tutor-leads`
+- `/tutor-leads-uk`
+- `/online-tutor-leads`
+- `/how-to-get-more-tutoring-clients`
+- `/how-to-advertise-tutoring-business`
+- `/best-place-to-advertise-tutoring`
+- `/where-to-advertise-as-a-tutor`
+- `/tutor-marketplace-uk`
+- `/tutor-platform-uk`
+- `/no-subscription-tutor-platform`
+- `/superprof-alternative-for-tutors`
+- `/tutorful-alternative-for-tutors`
+- `/tutor-hunt-alternative-for-tutors`
+- `/first-tutors-alternative-for-tutors`
+- `/for-tutors`
+- `/for-parents`
+- `/pricing`
+- `/local-tutors-uk`
+- `/independent-tutors-uk`
+- `/no-commission-tutor-platform`
 - `/subjects`
 - `/locations`
 - `/guides`
@@ -111,6 +151,30 @@ Important public SEO routes include:
 - `/guides/how-to-check-a-tutor-before-booking`
 - `/profile-checks`
 - `/dbs-checks`
+- `/dbs-checked-tutors`
+- `/background-checked-tutors`
+- `/verified-tutors`
+- `/dbs-verified-tutors`
+- `/identity-verified-tutors`
+- `/safe-tutor-directory`
+- `/find-a-safe-tutor`
+- `/tutor-dbs-check`
+- `/enhanced-dbs-tutor`
+- `/dbs-update-service-tutor`
+- `/tutor-background-check`
+- `/private-tutor-safety`
+- `/child-safeguarding-tutor`
+- `/safe-online-tutoring`
+- `/parent-guide-to-hiring-a-tutor`
+- `/check-tutor-qualifications`
+- `/qualified-tutors`
+- `/qts-tutors`
+- `/teacher-tutors`
+- `/experienced-tutors`
+- `/tutor-references`
+- `/tutor-reviews`
+- `/safeguarding-for-tutors`
+- `/private-tutor-safeguarding`
 - `/identity-checks`
 - `/qualification-checks`
 - `/safeguarding-checks`
@@ -123,8 +187,22 @@ Important public SEO routes include:
 - `/exam-boards/sqa`
 - `/how-tutor-listings-rank`
 - `/tutor-directory-comparison`
+- `/first-tutors-alternative`
+- `/superprof-alternative`
+- `/tutorful-alternative`
+- `/mytutor-alternative`
+- `/tutorhunt-alternative`
+- `/tutorperch-alternative`
+- `/best-tutor-websites-uk`
 - `/tutors-near-me`
 - `/homeschooling-tutors`
+- `/gcse-english-tutors`
+- `/gcse-science-tutors`
+- `/a-level-maths-tutors`
+- `/a-level-english-tutors`
+- `/a-level-science-tutors`
+- `/ks2-maths-tutors`
+- `/ks2-english-tutors`
 - `/subjects/[subject]`
 - `/locations/[location]`
 - `/[subject]-tutors`
@@ -136,6 +214,18 @@ Important public SEO routes include:
 Avoid creating thin duplicated location or subject pages. Unknown or unsupported dynamic SEO pages should be `noindex` unless they contain substantial useful content or real approved tutor results.
 
 The sitemap should include public pages, useful SEO pages and approved tutor profiles only. It should exclude admin pages, tutor dashboard pages, login/signup pages, settings, enquiries, unpublished tutor profiles and demo/sample profiles.
+
+Reusable SEO data and templates live in `lib/seo/`:
+
+- `subjects.ts`
+- `levels.ts`
+- `locations.ts`
+- `examBoards.ts`
+- `seoTemplates.ts`
+- `faqs.ts`
+- `internalLinks.ts`
+
+The SEO system generates metadata, canonical URLs, Open Graph/Twitter metadata, breadcrumb schema, FAQ schema, CollectionPage schema, capped sitemap entries, and related internal links for priority pages. It deliberately avoids generating millions of thin pages at launch.
 
 ## Storage
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { UserRoundPlus } from "lucide-react";
 import { signUpTutor } from "@/app/actions/auth";
+import { TrackEvent, TrackFormSubmit } from "@/components/analytics/track-event";
 import { Button, Field, LinkButton, Panel, inputClass } from "@/components/ui";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default async function SignupPage({
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+      <TrackEvent name="tutor_signup_started" properties={{ path: "/signup" }} />
       <Panel>
         <UserRoundPlus className="size-9 text-leaf-700" aria-hidden />
         <h1 className="mt-4 text-3xl font-bold text-navy-900">Tutor sign up</h1>
@@ -27,7 +29,8 @@ export default async function SignupPage({
             {error}
           </p>
         ) : null}
-        <form action={signUpTutor} className="mt-6 grid gap-4">
+        <form id="tutor-signup-form" action={signUpTutor} className="mt-6 grid gap-4">
+          <TrackFormSubmit formId="tutor-signup-form" name="tutor_signup_started" properties={{ action: "form_submit" }} />
           <Field label="Email">
             <input name="email" type="email" required className={inputClass} />
           </Field>

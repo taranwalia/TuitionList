@@ -31,10 +31,10 @@ describe("filterTutors", () => {
     const tutors = filterTutors(sampleTutors, {
       subject: "Maths",
       level: "GCSE",
-      location: "Kent"
+      location: "London"
     });
 
     expect(tutors).toHaveLength(1);
-    expect(tutors[0].slug).toBe("jane-smith-gcse-maths-kent");
+    expect(tutors[0].slug).toBe("jane-smith-gcse-maths-london");
   });
 });

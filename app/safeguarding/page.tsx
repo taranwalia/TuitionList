@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
 
 export const metadata: Metadata = {
-  title: "Safeguarding Information",
-  description: "Safeguarding information for parents, carers, students, tutors, and tuition providers using TuitionList.",
+  title: "Safeguarding and Tutor Checks | TuitionList",
+  description: "Learn how TuitionList supports safer tutor discovery through profile information, DBS details and parent guidance.",
   alternates: { canonical: "/safeguarding" }
 };
 
 export default function SafeguardingPage() {
   return (
-    <StaticPage title="Safeguarding information">
+    <StaticPage title="Safeguarding on TuitionList">
       <p>
         TuitionList is an online directory only. Tutors and tuition providers listed on TuitionList are independent providers and are not employed,
         managed, supervised, or endorsed by TuitionList.

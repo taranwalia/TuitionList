@@ -1,16 +1,40 @@
 import type { Metadata } from "next";
+import { TrackEvent, TrackFormSubmit } from "@/components/analytics/track-event";
 import { SearchBox } from "@/components/directory/search-box";
 import { TutorCard } from "@/components/directory/tutor-card";
 import { getPublishedTutors } from "@/lib/tutors";
 import type { DirectoryFilters } from "@/types/domain";
 
-export const metadata: Metadata = {
-  title: "Find a Tutor for Free",
-  description: "Search independent tutors and tuition providers by subject, level, location, tuition type, and rate on TuitionList.",
-  alternates: {
-    canonical: "/find-a-tutor"
-  }
-};
+const findTutorDescription = "Search independent tutors and tuition providers by subject, level, location, tuition type, and rate on TuitionList.";
+
+export async function generateMetadata({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const filters = filtersFromParams(params);
+  const hasSearch = hasActiveSearch(filters);
+  const tutors = hasSearch ? await getPublishedTutors(filters) : [];
+
+  return {
+    title: "Find a Tutor for Free",
+    description: findTutorDescription,
+    alternates: {
+      canonical: "/find-a-tutor"
+    },
+    robots: hasSearch && tutors.length === 0 ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: {
+      title: "Find a Tutor for Free | TuitionList",
+      description: findTutorDescription
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Find a Tutor for Free | TuitionList",
+      description: findTutorDescription
+    }
+  };
+}
 
 export default async function FindTutorPage({
   searchParams
@@ -18,22 +42,14 @@ export default async function FindTutorPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const filters: DirectoryFilters = {
-    keyword: asString(params.keyword),
-    subject: asString(params.subject),
-    level: asString(params.level),
-    location: asString(params.location),
-    tuitionPreference: asString(params.tuitionPreference) as DirectoryFilters["tuitionPreference"],
-    minRate: asNumber(params.minRate),
-    maxRate: asNumber(params.maxRate),
-    dbsOnly: params.dbsOnly === "on",
-    qtsOnly: params.qtsOnly === "on",
-    sort: (asString(params.sort) as DirectoryFilters["sort"]) ?? "relevance"
-  };
+  const filters = filtersFromParams(params);
   const tutors = await getPublishedTutors(filters);
+  const hasSearch = hasActiveSearch(filters);
 
   return (
     <section className="bg-slate-50">
+      {hasSearch ? <TrackEvent name="tutor_search_performed" properties={{ resultCount: tutors.length }} /> : null}
+      {filters.tuitionPreference === "online" ? <TrackEvent name="online_tutor_filter_used" properties={{ path: "/find-a-tutor" }} /> : null}
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div>
           <h1 className="text-4xl font-bold text-navy-900">Find a tutor for free</h1>
@@ -45,7 +61,8 @@ export default async function FindTutorPage({
         <SearchBox compact />
         <div className="grid gap-4 md:grid-cols-[260px_1fr]">
           <aside className="rounded-lg border border-slate-200 bg-white p-4">
-            <form className="grid gap-4">
+            <form id="directory-filter-form" className="grid gap-4">
+              <TrackFormSubmit formId="directory-filter-form" name="tutor_search_performed" properties={{ source: "directory_filters" }} />
               <input type="hidden" name="subject" value={filters.subject ?? ""} />
               <input type="hidden" name="level" value={filters.level ?? ""} />
               <label className="grid gap-2 text-sm font-medium">
@@ -105,4 +122,23 @@ function asNumber(value: string | string[] | undefined) {
   if (!raw) return undefined;
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function filtersFromParams(params: Record<string, string | string[] | undefined>): DirectoryFilters {
+  return {
+    keyword: asString(params.keyword),
+    subject: asString(params.subject),
+    level: asString(params.level),
+    location: asString(params.location),
+    tuitionPreference: asString(params.tuitionPreference) as DirectoryFilters["tuitionPreference"],
+    minRate: asNumber(params.minRate),
+    maxRate: asNumber(params.maxRate),
+    dbsOnly: params.dbsOnly === "on",
+    qtsOnly: params.qtsOnly === "on",
+    sort: (asString(params.sort) as DirectoryFilters["sort"]) ?? "relevance"
+  };
+}
+
+function hasActiveSearch(filters: DirectoryFilters) {
+  return Object.values(filters).some((value) => value !== undefined && value !== "" && value !== false && value !== "relevance");
 }

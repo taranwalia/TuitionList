@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { submitEnquiry } from "@/app/actions/enquiries";
 import { LEVELS, PROFILE_DISCLAIMER, SUBJECTS } from "@/lib/constants";
 import { Button, Field, inputClass } from "@/components/ui";
+import { TrackFormSubmit } from "@/components/analytics/track-event";
 
 export function EnquiryForm({
   tutorId,
@@ -18,6 +19,7 @@ export function EnquiryForm({
 }) {
   return (
     <form action={submitEnquiry} id="enquire" className="grid gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-soft">
+      <TrackFormSubmit formId="enquire" name="tutor_contact_clicked" properties={{ tutorId, tutorName }} />
       <input type="hidden" name="tutorId" value={tutorId} />
       {returnPath ? <input type="hidden" name="returnPath" value={returnPath} /> : null}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />

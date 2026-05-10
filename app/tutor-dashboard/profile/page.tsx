@@ -1,4 +1,5 @@
 import { submitTutorProfile } from "@/app/actions/profile";
+import { TrackEvent } from "@/components/analytics/track-event";
 import { Button, Field, Panel, inputClass } from "@/components/ui";
 import { requireUser } from "@/lib/auth";
 import { LEVELS, SUBJECTS } from "@/lib/constants";
@@ -16,6 +17,7 @@ export default async function TutorProfileEditPage({
   const params = await searchParams;
   const error = Array.isArray(params.error) ? params.error[0] : params.error;
   const warning = Array.isArray(params.warning) ? params.warning[0] : params.warning;
+  const signupCompleted = (Array.isArray(params.signup) ? params.signup[0] : params.signup) === "completed";
   const qualification = profile?.qualifications?.[0];
   const subjectOptions = new Set<string>(SUBJECTS);
   const levelOptions = new Set<string>(LEVELS);
@@ -24,6 +26,7 @@ export default async function TutorProfileEditPage({
 
   return (
     <section className="bg-slate-50">
+      {signupCompleted ? <TrackEvent name="tutor_signup_completed" properties={{ path: "/tutor-dashboard/profile" }} /> : null}
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <Panel>
           <h1 className="text-3xl font-bold text-navy-900">Edit tutor profile</h1>

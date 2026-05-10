@@ -1,4 +1,14 @@
 import { SITE_URL } from "@/lib/constants";
+import { seoExamBoards } from "@/lib/seo/examBoards";
+import { coreSeoFaqs, type SeoFaq } from "@/lib/seo/faqs";
+import { guideSeoPages } from "@/lib/seo/guides";
+import { findSeoLevel } from "@/lib/seo/levels";
+import { findSeoLocation, seoLocations } from "@/lib/seo/locations";
+import { getPriorityTutorPage, priorityTutorSubjectPages } from "@/lib/seo/priorityTutorPages";
+import { alternativePageTemplate, dbsCheckedSubjectTemplate, freeTutorListingSubjectTemplate, tutorRouteTemplate } from "@/lib/seo/seoTemplates";
+import { findSeoSubject, seoSubjects } from "@/lib/seo/subjects";
+import { trustSeoPages } from "@/lib/seo/trustPages";
+import { tutorGrowthSeoPages } from "@/lib/seo/tutorGrowthPages";
 import type { Metadata } from "next";
 
 export type SeoLink = {
@@ -14,7 +24,19 @@ export type SeoPage = {
   intro: string;
   sections: { heading: string; body: string }[];
   links?: SeoLink[];
+  faqs?: SeoFaq[];
   index?: boolean;
+  tutorSearch?: {
+    subject?: string;
+    subjectSlug?: string;
+    level?: string;
+    levelSlug?: string;
+    location?: string;
+    locationSlug?: string;
+    onlineOnly?: boolean;
+    nearbyLinks?: SeoLink[];
+    relatedSubjectLinks?: SeoLink[];
+  };
 };
 
 export const nationalSeoLinks: SeoLink[] = [
@@ -23,6 +45,9 @@ export const nationalSeoLinks: SeoLink[] = [
   { href: "/guides", label: "Parent guides" },
   { href: "/profile-checks", label: "Profile checks explained" },
   { href: "/free-tutor-directory-uk", label: "Free tutor directory UK" },
+  { href: "/local-tutors-uk", label: "Local tutors UK" },
+  { href: "/independent-tutors-uk", label: "Independent tutors UK" },
+  { href: "/no-commission-tutor-platform", label: "No commission tutor platform" },
   { href: "/subjects", label: "Subjects" },
   { href: "/locations", label: "Locations" },
   { href: "/become-a-tutor", label: "Create a free tutor profile" },
@@ -67,26 +92,23 @@ const guideLinks: SeoLink[] = [
 const checkLinks: SeoLink[] = [
   { href: "/profile-checks", label: "Profile checks" },
   { href: "/dbs-checks", label: "DBS checks" },
+  { href: "/dbs-checked-tutors", label: "DBS checked tutors" },
+  { href: "/background-checked-tutors", label: "Background-checked tutors" },
   { href: "/identity-checks", label: "Identity checks" },
   { href: "/qualification-checks", label: "Qualification checks" },
   { href: "/safeguarding-checks", label: "Safeguarding checks" }
 ];
 
 const examBoardLinks: SeoLink[] = [
-  { href: "/exam-boards/aqa", label: "AQA" },
-  { href: "/exam-boards/edexcel", label: "Edexcel" },
-  { href: "/exam-boards/ocr", label: "OCR" },
-  { href: "/exam-boards/eduqas", label: "Eduqas" },
-  { href: "/exam-boards/ccea", label: "CCEA" },
-  { href: "/exam-boards/sqa", label: "SQA" }
+  ...seoExamBoards.map((board) => ({ href: `/exam-boards/${board.slug}`, label: board.name }))
 ];
 
 export const staticSeoPages: SeoPage[] = [
   {
     path: "/tutors",
-    title: "Tutors UK | TuitionList",
-    description: "Search independent tutors, teachers, and tuition providers across the UK on TuitionList.",
-    h1: "Tutors across the UK",
+    title: "Find Tutors Near Me | Local and Online Tutors UK | TuitionList",
+    description: "Search local and online tutors across the UK. Find private tutors for Maths, English, Science, 11 Plus, GCSE, A-Level and more.",
+    h1: "Find Tutors Near You",
     intro:
       "TuitionList helps parents, carers, and students discover independent tutors, teachers, and tuition providers across the UK.",
     sections: [
@@ -105,9 +127,9 @@ export const staticSeoPages: SeoPage[] = [
   },
   {
     path: "/online-tutors",
-    title: "Online Tutors UK | TuitionList",
-    description: "Find online tutors across the UK by subject, level, rate, and availability.",
-    h1: "Online tutors UK",
+    title: "Online Tutors UK | Find Private Online Tutors | TuitionList",
+    description: "Find online tutors for Maths, English, Science, 11 Plus, GCSE, A-Level and more. Browse independent UK tutors and contact them directly.",
+    h1: "Find Online Tutors Across the UK",
     intro:
       "Find online tutors across the UK for school subjects, exam preparation, adult learning, and specialist support.",
     sections: [
@@ -186,6 +208,165 @@ export const staticSeoPages: SeoPage[] = [
       }
     ],
     links: nationalSeoLinks
+  },
+  {
+    path: "/free-tutor-directory",
+    title: "Free Tutor Directory UK | Find and List Tutors for Free",
+    description:
+      "TuitionList is a free UK tutor directory for parents, students and independent tutors. Find tutors or create a tutor profile without commission or subscription fees.",
+    h1: "Free UK Tutor Directory",
+    intro:
+      "TuitionList is a free UK tutor directory where parents, carers, and students can search for independent tutors and send enquiries directly.",
+    sections: [
+      {
+        heading: "Free search and enquiries",
+        body:
+          "Families can search published tutor profiles and send enquiries without parent finder fees, subscription charges, or hidden platform markups."
+      },
+      {
+        heading: "Free tutor profiles",
+        body:
+          "Tutors, teachers, and tuition providers can create basic profiles for free and submit them for review before they appear publicly."
+      },
+      {
+        heading: "Directory only",
+        body:
+          "TuitionList does not employ, manage, supervise, endorse, or guarantee tutors. Parents, carers, and students remain responsible for making their own checks."
+      }
+    ],
+    faqs: coreSeoFaqs,
+    links: [
+      { href: "/find-a-tutor", label: "Find a tutor" },
+      { href: "/become-a-tutor", label: "Create a free tutor profile" },
+      { href: "/online-tutors", label: "Online tutors" },
+      { href: "/tutors-near-me", label: "Tutors near me" },
+      { href: "/profile-checks", label: "Profile checks explained" },
+      { href: "/no-commission-tutor-platform", label: "No commission tutor platform" }
+    ]
+  },
+  {
+    path: "/free-tutor-listing-uk",
+    title: "Free Tutor Listing UK | TuitionList",
+    description: "Create a free tutor listing on TuitionList and receive enquiries without commission, subscriptions, or parent finder fees.",
+    h1: "Free tutor listing UK",
+    intro:
+      "Tutors, teachers, and tuition providers can create a free TuitionList profile so parents, carers, and students can find them across the UK.",
+    sections: [
+      {
+        heading: "Free profile for tutors",
+        body:
+          "Add your subjects, levels, location, online or in-person availability, rates, qualifications, experience, and contact preferences. Profiles are reviewed before they appear publicly."
+      },
+      {
+        heading: "No commission or subscription",
+        body:
+          "TuitionList does not charge lesson commission, tutor subscription fees, parent finder fees, or hidden platform markups. Parents send enquiries directly through your published profile."
+      },
+      {
+        heading: "Profile checks where possible",
+        body:
+          "Where possible, TuitionList may review evidence such as ID, DBS certificate details, qualifications, insurance, or safeguarding training. Badges show what has been self-declared, seen, or confirmed."
+      }
+    ],
+    links: [
+      { href: "/become-a-tutor", label: "Create your free tutor profile" },
+      { href: "/no-commission-tutor-platform", label: "No commission tutor platform" },
+      { href: "/how-tutor-listings-rank", label: "How listings rank" },
+      { href: "/profile-checks", label: "Profile checks explained" }
+    ]
+  },
+  {
+    path: "/local-tutors-uk",
+    title: "Local Tutors UK | TuitionList",
+    description: "Search local tutors and tuition providers across the UK by subject, level, location, tuition type, and rate.",
+    h1: "Local tutors UK",
+    intro:
+      "TuitionList helps families search for local tutors across the UK, as well as online tutors when local availability is limited.",
+    sections: [
+      {
+        heading: "Find tutors by area",
+        body:
+          "Search by town, city, county, or postcode area to compare published profiles for local in-person tuition, online tuition, or tutors who offer both."
+      },
+      {
+        heading: "Local does not mean checked by default",
+        body:
+          "A tutor appearing in a location search does not mean TuitionList recommends or guarantees them. Families should read profile badges and make their own checks before arranging tuition."
+      },
+      {
+        heading: "Compare subjects and levels",
+        body:
+          "Use subject, level, tuition type, and rate filters to narrow the search, then send an enquiry directly through a tutor's public profile."
+      }
+    ],
+    links: [
+      { href: "/tutors-near-me", label: "Tutors near me" },
+      { href: "/locations", label: "Browse locations" },
+      { href: "/online-tutors", label: "Online tutors UK" },
+      { href: "/guides/how-to-choose-a-tutor", label: "How to choose a tutor" }
+    ]
+  },
+  {
+    path: "/independent-tutors-uk",
+    title: "Independent Tutors UK | TuitionList",
+    description: "Find independent tutors, teachers, and tuition providers across the UK on TuitionList.",
+    h1: "Independent tutors UK",
+    intro:
+      "TuitionList is built for independent tutor discovery, helping families find tutors, teachers, and tuition providers without agency fees or lesson commission.",
+    sections: [
+      {
+        heading: "Independent providers",
+        body:
+          "Tutors and tuition providers listed on TuitionList are independent providers. TuitionList does not employ, manage, supervise, or endorse them."
+      },
+      {
+        heading: "Direct enquiries",
+        body:
+          "Parents, carers, and students can send enquiries through tutor profiles. Lesson arrangements, fees, cancellations, refunds, and safeguarding arrangements are agreed directly."
+      },
+      {
+        heading: "Useful profile information",
+        body:
+          "Profiles can show subjects, levels, rates, experience, location, tuition type, qualifications, self-declared information, and admin-seen profile labels where applicable."
+      }
+    ],
+    links: [
+      { href: "/private-tutors", label: "Private tutors UK" },
+      { href: "/free-tutor-directory-uk", label: "Free tutor directory" },
+      { href: "/find-a-tutor", label: "Find a tutor" },
+      { href: "/become-a-tutor", label: "Create a tutor profile" }
+    ]
+  },
+  {
+    path: "/no-commission-tutor-platform",
+    title: "No Commission Tutor Platform | TuitionList",
+    description: "TuitionList is a no commission UK tutor directory with free tutor profiles and free parent enquiries.",
+    h1: "No commission tutor platform",
+    intro:
+      "TuitionList helps tutors stay visible and helps families send enquiries without lesson commission, parent finder fees, subscription charges, or hidden platform markups.",
+    sections: [
+      {
+        heading: "No lesson commission",
+        body:
+          "TuitionList does not take a percentage of tutor lesson fees. Any lesson fees are agreed directly between the parent, carer, student, tutor, or tuition provider."
+      },
+      {
+        heading: "No parent finder fee",
+        body:
+          "Parents, carers, and students can search published profiles and send enquiries without paying TuitionList a finder fee."
+      },
+      {
+        heading: "Directory only",
+        body:
+          "TuitionList does not arrange tuition, process lesson payments, supervise lessons, or become a party to any agreement between families and tutors."
+      }
+    ],
+    links: [
+      { href: "/free-tutor-directory-uk", label: "Free tutor directory UK" },
+      { href: "/free-tutor-listing-uk", label: "Free tutor listing UK" },
+      { href: "/tutor-directory-comparison", label: "Tutor directory comparison" },
+      { href: "/terms", label: "Terms and conditions" }
+    ]
   },
   {
     path: "/subjects",
@@ -469,6 +650,101 @@ export const staticSeoPages: SeoPage[] = [
     links: checkLinks
   },
   {
+    path: "/dbs-checked-tutors",
+    title: "DBS Checked Tutors UK | Find Background-Checked Tutors",
+    description: "Browse tutors who display DBS or background-check information on their TuitionList profiles.",
+    h1: "Find DBS Checked Tutors",
+    intro:
+      "Families often search for DBS checked tutors. On TuitionList, DBS wording is used carefully so families can see whether DBS information is self-declared or marked as seen by TuitionList.",
+    sections: [
+      {
+        heading: "DBS self-declared or seen",
+        body:
+          "A DBS self-declared label means the tutor has provided DBS-related information. A DBS seen by TuitionList label means an admin has marked DBS evidence as seen."
+      },
+      {
+        heading: "Not a guarantee",
+        body:
+          "DBS labels do not mean TuitionList recommends, guarantees, supervises, or accepts responsibility for any tutor. Families should ask to see relevant evidence before arranging tuition."
+      },
+      {
+        heading: "Search with other factors",
+        body:
+          "DBS information should be considered alongside identity, qualifications, references, safeguarding arrangements, experience, lesson location, supervision, and suitability."
+      }
+    ],
+    links: [
+      { href: "/find-a-tutor?dbs=true", label: "Search tutors with DBS filters" },
+      { href: "/dbs-checks", label: "DBS checks explained" },
+      { href: "/profile-checks", label: "Profile checks explained" },
+      { href: "/safeguarding", label: "Safeguarding information" }
+    ]
+  },
+  {
+    path: "/background-checked-tutors",
+    title: "Background-Checked Tutors UK | TuitionList",
+    description: "Understand profile checks, badges, and admin-seen labels when searching for tutors on TuitionList.",
+    h1: "Background-checked tutors UK",
+    intro:
+      "Some families search for background-checked tutors. TuitionList uses clearer wording: profile badges show what information has been self-declared, seen, or confirmed where possible.",
+    sections: [
+      {
+        heading: "Profile checks completed",
+        body:
+          "A blue tick may appear when one or more admin checks have been marked as seen or confirmed, such as ID seen, DBS seen, qualification seen, reference received, insurance confirmed, or safeguarding training seen."
+      },
+      {
+        heading: "Check the badge details",
+        body:
+          "The blue tick does not mean every possible check has been completed. Families should read the individual badges to understand exactly what has been marked as seen or confirmed."
+      },
+      {
+        heading: "Families remain responsible",
+        body:
+          "Profile checks are not a recommendation or guarantee. Parents, carers, and students remain responsible for making their own checks before arranging tuition."
+      }
+    ],
+    links: [
+      { href: "/profile-checks", label: "Profile checks explained" },
+      { href: "/identity-checks", label: "Identity checks" },
+      { href: "/qualification-checks", label: "Qualification checks" },
+      { href: "/guides/how-to-check-a-tutor-before-booking", label: "How to check a tutor" }
+    ]
+  },
+  {
+    path: "/verified-tutors",
+    title: "Verified Tutors UK | Find Trusted Private Tutors",
+    description: "Search tutor profiles with profile check labels and find private tutors for Maths, English, Science, 11 Plus, GCSE and A-Level.",
+    h1: "Find Verified Tutors",
+    intro:
+      "Some families search for verified tutors. On TuitionList, profile labels are used carefully to show what has been self-declared, seen, or confirmed by TuitionList where applicable.",
+    sections: [
+      {
+        heading: "What profile checks mean",
+        body:
+          "A blue tick or profile check label may appear when one or more admin checks have been marked as seen or confirmed, such as ID seen, DBS seen, qualification seen, reference received, insurance confirmed, or safeguarding training seen."
+      },
+      {
+        heading: "Not a guarantee or endorsement",
+        body:
+          "A badge, blue tick, or profile label does not mean TuitionList recommends, guarantees, supervises, or accepts responsibility for any tutor or tuition provider."
+      },
+      {
+        heading: "Make your own checks",
+        body:
+          "Parents, carers, and students should still check identity, DBS certificate details where relevant, qualifications, references, safeguarding arrangements, online safety, lesson arrangements, and suitability before arranging tuition."
+      }
+    ],
+    links: [
+      { href: "/profile-checks", label: "Profile checks explained" },
+      { href: "/dbs-checked-tutors", label: "DBS checked tutors" },
+      { href: "/background-checked-tutors", label: "Background-checked tutors" },
+      { href: "/find-a-tutor", label: "Find a tutor" },
+      { href: "/safeguarding", label: "Safeguarding information" },
+      { href: "/guides/how-to-check-a-tutor-before-booking", label: "How to check a tutor" }
+    ]
+  },
+  {
     path: "/identity-checks",
     title: "Identity Checks and Tutor Profiles | TuitionList",
     description: "Understand the ID seen by TuitionList label on tutor profiles.",
@@ -599,15 +875,112 @@ export const staticSeoPages: SeoPage[] = [
     ],
     links: [
       { href: "/free-tutor-directory-uk", label: "Free tutor directory UK" },
+      { href: "/first-tutors-alternative", label: "First Tutors alternative" },
       { href: "/find-a-tutor", label: "Find a tutor" },
       { href: "/become-a-tutor", label: "Create a tutor profile" }
     ]
   },
   {
+    path: "/first-tutors-alternative",
+    title: "First Tutors Alternative | Free UK Tutor Directory | TuitionList",
+    description:
+      "TuitionList is a free UK tutor directory where parents can find local and online tutors and tutors can create a profile for free.",
+    h1: "Looking for a First Tutors Alternative?",
+    intro:
+      "If you are comparing UK tutor directories, TuitionList offers a simple free directory model for parents, carers, students, tutors, teachers, and tuition providers.",
+    sections: [
+      {
+        heading: "Free tutor discovery",
+        body:
+          "Parents, carers, and students can search published tutor profiles and send enquiries without paying TuitionList a parent finder fee."
+      },
+      {
+        heading: "Free tutor listings",
+        body:
+          "Tutors and tuition providers can create basic profiles for free. TuitionList does not charge lesson commission, subscription fees, or hidden platform markups."
+      },
+      {
+        heading: "Directory-only model",
+        body:
+          "TuitionList is not a tutoring agency. It does not employ, manage, supervise, endorse, or guarantee tutors. Families remain responsible for checking suitability before arranging tuition."
+      }
+    ],
+    links: [
+      { href: "/free-tutor-directory-uk", label: "Free tutor directory UK" },
+      { href: "/no-commission-tutor-platform", label: "No commission tutor platform" },
+      { href: "/tutor-directory-comparison", label: "Tutor directory comparison" },
+      { href: "/become-a-tutor", label: "Create a free tutor profile" }
+    ]
+  },
+  {
+    ...alternativePageTemplate("Superprof", "/superprof-alternative"),
+    title: "Superprof Alternative UK | Free Tutor Directory | TuitionList",
+    description: "Compare TuitionList as a free UK tutor directory for finding independent local and online tutors.",
+    h1: "Looking for a Superprof Alternative?"
+  },
+  {
+    ...alternativePageTemplate("Tutorful", "/tutorful-alternative"),
+    title: "Tutorful Alternative UK | Free Tutor Directory | TuitionList",
+    description: "Find independent local and online tutors through TuitionList, a free UK tutor directory.",
+    h1: "Looking for a Tutorful Alternative?"
+  },
+  {
+    ...alternativePageTemplate("MyTutor", "/mytutor-alternative"),
+    title: "MyTutor Alternative UK | Free Tutor Directory | TuitionList",
+    description: "Search online and local independent tutors with TuitionList, a free UK tutor directory.",
+    h1: "Looking for a MyTutor Alternative?"
+  },
+  {
+    ...alternativePageTemplate("Tutor Hunt", "/tutorhunt-alternative"),
+    title: "Tutor Hunt Alternative UK | Free Tutor Directory | TuitionList",
+    description: "TuitionList helps parents find independent tutors and lets tutors create a profile for free.",
+    h1: "Looking for a Tutor Hunt Alternative?"
+  },
+  {
+    ...alternativePageTemplate("Tutorperch", "/tutorperch-alternative"),
+    title: "Tutorperch Alternative UK | Free Tutor Directory | TuitionList",
+    description: "Compare TuitionList as a free UK tutor directory for parents, students, tutors, teachers, and tuition providers.",
+    h1: "Looking for a Tutorperch Alternative?"
+  },
+  {
+    path: "/best-tutor-websites-uk",
+    title: "Best Tutor Websites UK | Free Tutor Directories and Platforms",
+    description: "Compare tutor websites, tutoring platforms, and free tutor directories in the UK. TuitionList is a free UK tutor directory.",
+    h1: "Best Tutor Websites UK",
+    intro:
+      "Parents, carers, students, tutors, teachers, and tuition providers can compare different tutor websites and directories when deciding where to search or list tutoring services.",
+    sections: [
+      {
+        heading: "Free tutor websites and directories",
+        body:
+          "TuitionList is designed as a free UK tutor directory. Parents can search and send enquiries for free, and tutors can create basic profiles for free."
+      },
+      {
+        heading: "What to compare",
+        body:
+          "When comparing tutor websites, consider fees, commission, profile visibility, enquiry access, safeguarding wording, profile checks, tutor independence, and whether the platform acts as an agency or directory."
+      },
+      {
+        heading: "Related searches",
+        body:
+          "best tutor websites UK, best tutoring platforms UK, best tutor directories UK, free tutor platforms UK, free tutor websites UK, UK tutor marketplace, UK tutor directory, private tutor directory UK"
+      }
+    ],
+    faqs: coreSeoFaqs,
+    links: [
+      { href: "/free-tutor-directory", label: "Free tutor directory" },
+      { href: "/tutor-directory-comparison", label: "Tutor directory comparison" },
+      { href: "/first-tutors-alternative", label: "First Tutors alternative" },
+      { href: "/superprof-alternative", label: "Superprof alternative" },
+      { href: "/tutorful-alternative", label: "Tutorful alternative" },
+      { href: "/become-a-tutor", label: "Create a free tutor profile" }
+    ]
+  },
+  {
     path: "/tutors-near-me",
-    title: "Tutors Near Me | TuitionList",
-    description: "Search for tutors near you or online across the UK on TuitionList.",
-    h1: "Tutors near me",
+    title: "Tutors Near Me | Find Local Private Tutors | TuitionList",
+    description: "Looking for tutors near you? Search local private tutors by subject, level and location with TuitionList's free UK tutor directory.",
+    h1: "Find Tutors Near Me",
     intro:
       "Use TuitionList to search for local tutors near you, online tutors across the UK, or tutors who offer both in-person and online lessons.",
     sections: [
@@ -666,6 +1039,13 @@ export const curatedSeoPages: SeoPage[] = [
   levelSubjectPage("university-tutors", "University", "University Tutors UK"),
   levelSubjectPage("adult-learning-tutors", "Adult learning", "Adult Learning Tutors UK"),
   levelSubjectPage("sen-support-tutors", "SEN support", "SEN Support Tutors UK"),
+  levelSubjectSpecificPage("gcse-english-tutors", "GCSE", "English", "GCSE English Tutors UK"),
+  levelSubjectSpecificPage("gcse-science-tutors", "GCSE", "Science", "GCSE Science Tutors UK"),
+  levelSubjectSpecificPage("a-level-maths-tutors", "A-Level", "Maths", "A-Level Maths Tutors UK"),
+  levelSubjectSpecificPage("a-level-english-tutors", "A-Level", "English", "A-Level English Tutors UK"),
+  levelSubjectSpecificPage("a-level-science-tutors", "A-Level", "Science", "A-Level Science Tutors UK"),
+  levelSubjectSpecificPage("ks2-maths-tutors", "KS2", "Maths", "KS2 Maths Tutors UK"),
+  levelSubjectSpecificPage("ks2-english-tutors", "KS2", "English", "KS2 English Tutors UK"),
   subjectAliasPage("subjects/maths", "Maths", "Maths Tutors UK"),
   subjectAliasPage("subjects/english", "English", "English Tutors UK"),
   subjectAliasPage("subjects/science", "Science", "Science Tutors UK"),
@@ -673,11 +1053,116 @@ export const curatedSeoPages: SeoPage[] = [
   subjectAliasPage("subjects/gcse-maths", "GCSE Maths", "GCSE Maths Tutors UK")
 ];
 
-export const allIndexableSeoPages = [...staticSeoPages, ...curatedSeoPages];
+export const allIndexableSeoPages = dedupeSeoPages([...staticSeoPages, ...curatedSeoPages, ...guideSeoPages, ...trustSeoPages, ...tutorGrowthSeoPages]);
 
 export function getSeoPage(path: string) {
   const normalized = path.replace(/^\/+|\/+$/g, "");
   return allIndexableSeoPages.find((page) => page.path.replace(/^\/+/, "") === normalized) ?? generateNoindexSeoPage(normalized);
+}
+
+export function getTutorsSeoPage(parts: string[]) {
+  if (parts.length === 0) return getSeoPage("/tutors");
+  if (parts.length === 1) {
+    const priorityPage = getPriorityTutorPage(parts[0]);
+    if (priorityPage) return priorityPage;
+
+    const subject = findSeoSubject(parts[0]);
+    if (subject) return tutorRouteTemplate({ subject, path: `/tutors/${parts[0]}` });
+
+    const location = findSeoLocation(parts[0]);
+    if (location) return tutorRouteTemplate({ location, path: `/tutors/${parts[0]}` });
+  }
+  if (parts.length === 2) {
+    const subject = findSeoSubject(parts[0]);
+    const level = findSeoLevel(parts[1]);
+    if (subject && level) return tutorRouteTemplate({ subject, level, path: `/tutors/${parts.join("/")}` });
+
+    const location = findSeoLocation(parts[0]);
+    const locationSubject = findSeoSubject(parts[1]);
+    if (location && locationSubject) return tutorRouteTemplate({ location, subject: locationSubject, path: `/tutors/${parts.join("/")}` });
+  }
+  if (parts.length === 3) {
+    const location = findSeoLocation(parts[0]);
+    const subject = findSeoSubject(parts[1]);
+    const level = findSeoLevel(parts[2]);
+    if (location && subject && level) return tutorRouteTemplate({ location, subject, level, path: `/tutors/${parts.join("/")}` });
+  }
+  return null;
+}
+
+export function getDbsCheckedTutorsSeoPage(parts: string[]) {
+  if (parts.length === 0) return getSeoPage("/dbs-checked-tutors");
+  if (parts.length === 1) {
+    const subject = findSeoSubject(parts[0]);
+    if (subject) return dbsCheckedSubjectTemplate(subject);
+  }
+  return null;
+}
+
+export function getFreeTutorListingSeoPage(parts: string[]) {
+  if (parts.length === 0) return getSeoPage("/free-tutor-listing-uk");
+  if (parts.length === 1) {
+    const subject = findSeoSubject(parts[0]);
+    if (subject) return freeTutorListingSubjectTemplate(subject);
+  }
+  return null;
+}
+
+export function getOnlineTutorsSeoPage(parts: string[]) {
+  if (parts.length === 0) return getSeoPage("/online-tutors");
+  if (parts.length === 1) {
+    const subject = findSeoSubject(parts[0]);
+    if (subject) return tutorRouteTemplate({ subject, onlineOnly: true, path: `/online-tutors/${parts[0]}` });
+  }
+  if (parts.length === 2) {
+    const subject = findSeoSubject(parts[0]);
+    const level = findSeoLevel(parts[1]);
+    if (subject && level) return tutorRouteTemplate({ subject, level, onlineOnly: true, path: `/online-tutors/${parts.join("/")}` });
+  }
+  return null;
+}
+
+export function priorityProgrammaticSeoPages() {
+  const prioritySubjects = seoSubjects.filter((subject) => subject.priority);
+  const priorityLocations = seoLocations.filter((location) => location.priority);
+  const priorityLevels = ["gcse", "a-level", "ks2", "11-plus"].map((slug) => findSeoLevel(slug)).filter(Boolean);
+  const pages: SeoPage[] = [];
+
+  prioritySubjects.forEach((subject) => {
+    pages.push(tutorRouteTemplate({ subject, path: `/tutors/${subject.slug}` }));
+    pages.push(tutorRouteTemplate({ subject, onlineOnly: true, path: `/online-tutors/${subject.slug}` }));
+    pages.push(dbsCheckedSubjectTemplate(subject));
+    pages.push(freeTutorListingSubjectTemplate(subject));
+  });
+
+  priorityLocations.forEach((location) => {
+    pages.push(tutorRouteTemplate({ location, path: `/tutors/${location.slug}` }));
+  });
+
+  priorityLocations.slice(0, 8).forEach((location) => {
+    prioritySubjects.slice(0, 6).forEach((subject) => {
+      pages.push(tutorRouteTemplate({ location, subject, path: `/tutors/${location.slug}/${subject.slug}` }));
+    });
+  });
+
+  priorityLocations.slice(0, 5).forEach((location) => {
+    prioritySubjects.slice(0, 4).forEach((subject) => {
+      priorityLevels.forEach((level) => {
+        if (level) pages.push(tutorRouteTemplate({ location, subject, level, path: `/tutors/${location.slug}/${subject.slug}/${level.slug}` }));
+      });
+    });
+  });
+
+  prioritySubjects.slice(0, 6).forEach((subject) => {
+    priorityLevels.forEach((level) => {
+      if (level) {
+        pages.push(tutorRouteTemplate({ subject, level, path: `/tutors/${subject.slug}/${level.slug}` }));
+        pages.push(tutorRouteTemplate({ subject, level, onlineOnly: true, path: `/online-tutors/${subject.slug}/${level.slug}` }));
+      }
+    });
+  });
+
+  return dedupeSeoPages([...priorityTutorSubjectPages(), ...kentMedwayPriorityPages(), ...pages]);
 }
 
 export function canonicalUrl(path: string) {
@@ -697,8 +1182,88 @@ export function metadataForSeoPage(page: SeoPage): Metadata {
       description: page.description,
       url: canonicalUrl(page.path),
       type: "website"
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: page.title,
+      description: page.description
     }
   };
+}
+
+function dedupeSeoPages(pages: SeoPage[]) {
+  return Array.from(new Map(pages.map((page) => [page.path, page])).values());
+}
+
+function kentMedwayPriorityPages() {
+  const locationSlugs = [
+    "kent",
+    "medway",
+    "chatham",
+    "rochester",
+    "gillingham",
+    "rainham",
+    "strood",
+    "walderslade",
+    "lordswood",
+    "hempstead",
+    "maidstone",
+    "sittingbourne",
+    "gravesend",
+    "dartford",
+    "tonbridge",
+    "tunbridge-wells",
+    "sevenoaks",
+    "ashford",
+    "canterbury",
+    "folkestone",
+    "dover",
+    "whitstable",
+    "herne-bay",
+    "faversham",
+    "swanley"
+  ];
+  const elevenPlusLocations = [
+    "kent",
+    "medway",
+    "chatham",
+    "rochester",
+    "gillingham",
+    "rainham",
+    "strood",
+    "walderslade",
+    "maidstone",
+    "dartford",
+    "gravesend",
+    "sevenoaks",
+    "tonbridge",
+    "tunbridge-wells"
+  ];
+  const gcseMathsLocations = ["kent", "medway", "chatham", "rochester", "gillingham", "rainham", "walderslade"];
+  const gcseEnglishLocations = ["kent", "medway", "chatham", "rochester", "gillingham"];
+  const gcseScienceLocations = ["kent", "medway", "chatham", "rochester", "gillingham"];
+
+  const pages: SeoPage[] = [];
+  locationSlugs.forEach((locationSlug) => {
+    const location = findSeoLocation(locationSlug);
+    if (location) pages.push(tutorRouteTemplate({ location, path: `/tutors/${location.slug}` }));
+  });
+
+  addLocationSubjectPages(pages, elevenPlusLocations, "11-plus");
+  addLocationSubjectPages(pages, gcseMathsLocations, "gcse-maths");
+  addLocationSubjectPages(pages, gcseEnglishLocations, "gcse-english");
+  addLocationSubjectPages(pages, gcseScienceLocations, "gcse-science");
+
+  return pages;
+}
+
+function addLocationSubjectPages(pages: SeoPage[], locationSlugs: string[], subjectSlug: string) {
+  const subject = findSeoSubject(subjectSlug);
+  if (!subject) return;
+  locationSlugs.forEach((locationSlug) => {
+    const location = findSeoLocation(locationSlug);
+    if (location) pages.push(tutorRouteTemplate({ location, subject, path: `/tutors/${location.slug}/${subject.slug}` }));
+  });
 }
 
 function subjectSeoPage(slug: string, subject: string, title: string): SeoPage {
@@ -799,6 +1364,40 @@ function levelSubjectPage(slug: string, level: string, title: string): SeoPage {
       { href: `/find-a-tutor?level=${encodeURIComponent(level)}`, label: `Search ${level} tutors` },
       { href: "/subjects", label: "Subjects" },
       { href: "/locations", label: "Locations" },
+      { href: "/guides/how-to-choose-a-tutor", label: "How to choose a tutor" }
+    ]
+  };
+}
+
+function levelSubjectSpecificPage(slug: string, level: string, subject: string, title: string): SeoPage {
+  return {
+    path: `/${slug}`,
+    title: `${title} | TuitionList`,
+    description: `Find ${title.toLowerCase()} across the UK on TuitionList. Search by location, online availability, rate, and profile information.`,
+    h1: title,
+    intro: `Search for independent tutors, teachers, and tuition providers offering ${level} ${subject.toLowerCase()} support across the UK.`,
+    sections: [
+      {
+        heading: `${level} ${subject} tutor search`,
+        body:
+          "Compare published profiles by subject, level, location, online or in-person availability, hourly rate, experience, and any self-declared or admin-seen profile labels."
+      },
+      {
+        heading: "Ask about the learner's needs",
+        body:
+          "Before arranging tuition, ask about the tutor's experience with the relevant year group, exam board or curriculum, lesson style, resources, homework, progress updates, and safeguarding arrangements."
+      },
+      {
+        heading: "Directory-only reminder",
+        body:
+          "TuitionList does not recommend or guarantee tutors. Families should make their own checks before arranging tuition."
+      }
+    ],
+    links: [
+      { href: `/find-a-tutor?subject=${encodeURIComponent(subject)}&level=${encodeURIComponent(level)}`, label: `Search ${level} ${subject} tutors` },
+      { href: `/${slugifySeo(subject)}-tutors`, label: `${subject} tutors` },
+      { href: `/${slugifySeo(level)}-tutors`, label: `${level} tutors` },
+      { href: "/locations", label: "Browse locations" },
       { href: "/guides/how-to-choose-a-tutor", label: "How to choose a tutor" }
     ]
   };

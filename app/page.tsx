@@ -19,12 +19,63 @@ const tutorBenefits = [
   "Suitable for tutors, teachers and tuition centres"
 ];
 
+const subjectLinks = [
+  ["Maths", "/tutors/maths"],
+  ["English", "/tutors/english"],
+  ["Science", "/tutors/science"],
+  ["11 Plus", "/tutors/11-plus"],
+  ["GCSE Maths", "/tutors/gcse-maths"],
+  ["Primary", "/tutors/primary"]
+];
+
+const levelLinks = [
+  ["KS1", "/ks1-tutors"],
+  ["KS2", "/ks2-tutors"],
+  ["11 Plus", "/11-plus-tutors"],
+  ["GCSE", "/gcse-tutors"],
+  ["A-Level", "/a-level-tutors"],
+  ["SEN support", "/sen-support-tutors"]
+];
+
+const locationLinks = [
+  ["London", "/tutors/london"],
+  ["Birmingham", "/tutors/birmingham"],
+  ["Manchester", "/tutors/manchester"],
+  ["Leeds", "/tutors/leeds"],
+  ["Bristol", "/tutors/bristol"],
+  ["Cardiff", "/tutors/cardiff"]
+];
+
+const popularSearches = [
+  ["Find a tutor near me", "/tutors-near-me"],
+  ["Online tutors UK", "/online-tutors"],
+  ["Private tutors UK", "/private-tutors"],
+  ["Local tutors UK", "/local-tutors-uk"],
+  ["Independent tutors UK", "/independent-tutors-uk"],
+  ["DBS checked tutors", "/dbs-checked-tutors"],
+  ["No commission tutors", "/no-commission-tutor-platform"],
+  ["List as a tutor for free", "/free-tutor-listing-uk"]
+];
+
 export const metadata: Metadata = {
-  title: "TuitionList | Free UK Tutor Directory",
+  title: "Find a Tutor Near Me | Free UK Tutor Directory | TuitionList",
   description:
-    "Find tutors across the UK for free. TuitionList helps parents, carers, and students discover independent tutors and tuition providers with no commission, no unlock fees, and no parent finder fees.",
+    "Find local and online tutors across the UK for Maths, English, Science, 11 Plus, GCSE, A-Level and more. TuitionList is a free UK tutor directory where parents can contact independent tutors directly.",
   alternates: {
     canonical: "/"
+  },
+  openGraph: {
+    title: "Find a Tutor Near Me | Free UK Tutor Directory | TuitionList",
+    description:
+      "Find local and online tutors across the UK for Maths, English, Science, 11 Plus, GCSE, A-Level and more. TuitionList is a free UK tutor directory where parents can contact independent tutors directly.",
+    url: "/",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Find a Tutor Near Me | Free UK Tutor Directory | TuitionList",
+    description:
+      "Find local and online tutors across the UK for Maths, English, Science, 11 Plus, GCSE, A-Level and more. TuitionList is a free UK tutor directory where parents can contact independent tutors directly."
   }
 };
 
@@ -61,10 +112,11 @@ export default function HomePage() {
               <Sparkles className="size-4" aria-hidden />
               A free UK tutor directory
             </p>
-            <h1 className="mt-5 text-4xl font-bold tracking-normal text-navy-900 sm:text-6xl">Find independent tutors for free</h1>
+            <h1 className="mt-5 text-4xl font-bold tracking-normal text-navy-900 sm:text-6xl">Find Local and Online Tutors Across the UK</h1>
             <p className="mt-6 text-lg leading-8 text-slate-700">
-              TuitionList helps parents, carers, and students discover independent tutors, teachers, and tuition providers across the UK. Search,
-              compare, and send enquiries without commission, unlock fees, or parent finder fees.
+              TuitionList is a free UK tutor directory helping parents, carers, and students find local and online tutors for Maths, English, Science,
+              11 Plus, GCSE, A-Level and more. Search independent tutors directly without agency fees, commission, subscriptions, unlock fees, or
+              parent finder fees.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <LinkButton href="/find-a-tutor" className="gap-2">
@@ -115,13 +167,56 @@ export default function HomePage() {
 
       <section className="bg-slate-50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mb-5">
+            <h2 className="text-2xl font-bold text-navy-900">A Free UK Tutor Directory for Parents and Students</h2>
+            <p className="mt-2 max-w-3xl leading-7 text-slate-700">
+              Find a tutor, compare private tuition options near you, or search online tutors across the UK. Parents can contact independent tutors
+              and tuition providers directly through TuitionList.
+            </p>
+          </div>
           <SearchBox />
         </div>
       </section>
 
+      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-3 lg:px-8">
+        <Panel>
+          <h2 className="text-2xl font-bold text-navy-900">Find Tutors by Subject</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-700">Search for subject tutors across the UK, including core school subjects and exam preparation.</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {subjectLinks.map(([label, href]) => (
+              <LinkButton key={href} href={href} variant="secondary">
+                {label}
+              </LinkButton>
+            ))}
+          </div>
+        </Panel>
+        <Panel>
+          <h2 className="text-2xl font-bold text-navy-900">Find Tutors by Level</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-700">Compare tutors for primary, 11 Plus, GCSE, A-Level, SEN support, adult learning and more.</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {levelLinks.map(([label, href]) => (
+              <LinkButton key={href} href={href} variant="secondary">
+                {label}
+              </LinkButton>
+            ))}
+          </div>
+        </Panel>
+        <Panel>
+          <h2 className="text-2xl font-bold text-navy-900">Find Tutors Near You</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-700">Search local tutors by town, city, county or postcode area, or widen your search with online tuition.</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {locationLinks.map(([label, href]) => (
+              <LinkButton key={href} href={href} variant="secondary">
+                {label}
+              </LinkButton>
+            ))}
+          </div>
+        </Panel>
+      </section>
+
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8">
         <Panel className="border-t-4 border-t-sky-600">
-          <h2 className="text-2xl font-bold text-navy-900">For parents</h2>
+          <h2 className="text-2xl font-bold text-navy-900">Why Use TuitionList?</h2>
           <ul className="mt-5 grid gap-3 text-slate-700">
             {parentBenefits.map((benefit) => (
               <li key={benefit} className="flex gap-3">
@@ -132,7 +227,7 @@ export default function HomePage() {
           </ul>
         </Panel>
         <Panel className="border-t-4 border-t-leaf-600">
-          <h2 className="text-2xl font-bold text-navy-900">For tutors</h2>
+          <h2 className="text-2xl font-bold text-navy-900">List as a Tutor for Free</h2>
           <ul className="mt-5 grid gap-3 text-slate-700">
             {tutorBenefits.map((benefit) => (
               <li key={benefit} className="flex gap-3">
@@ -145,6 +240,31 @@ export default function HomePage() {
       </section>
 
       <section className="border-y border-navy-100 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <Panel className="bg-sky-50">
+            <h2 className="text-2xl font-bold text-navy-900">Online and In-Person Tuition</h2>
+            <p className="mt-3 leading-7 text-slate-700">
+              TuitionList helps families search for online tutors UK-wide, local tutors near them, or tutors who offer both. Before arranging lessons,
+              parents should confirm lesson format, location, online safety, supervision, fees and cancellation terms directly with the tutor.
+            </p>
+          </Panel>
+          <Panel className="bg-leaf-50">
+            <h2 className="text-2xl font-bold text-navy-900">DBS Checked and Profile-Checked Tutor Profiles</h2>
+            <p className="mt-3 leading-7 text-slate-700">
+              Tutor profiles may show DBS self-declared information or checks marked as seen by TuitionList, such as ID, DBS, qualifications,
+              references, insurance or safeguarding training. Badges and blue ticks show what has been self-declared, seen or confirmed. They do not
+              mean TuitionList recommends or guarantees any tutor.
+            </p>
+            <div className="mt-5">
+              <LinkButton href="/profile-checks" variant="secondary">
+                Learn about profile checks
+              </LinkButton>
+            </div>
+          </Panel>
+        </div>
+      </section>
+
+      <section className="border-b border-navy-100 bg-white">
         <div className="mx-auto grid max-w-7xl gap-5 px-4 py-10 sm:px-6 lg:px-8">
           <div className="flex items-start gap-3">
             <ShieldAlert className="mt-1 size-6 shrink-0 text-navy-800" aria-hidden />
@@ -157,6 +277,22 @@ export default function HomePage() {
             </div>
           </div>
           <p className="max-w-5xl text-sm leading-6 text-slate-600">{DIRECTORY_DISCLAIMER}</p>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-12 sm:px-6 lg:px-8">
+        <div>
+          <h2 className="text-2xl font-bold text-navy-900">Popular Tutor Searches</h2>
+          <p className="mt-2 max-w-3xl leading-7 text-slate-700">
+            Explore popular searches for free tutor discovery, private tuition near me, online tutors, local tutors and no commission tutor listings.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {popularSearches.map(([label, href]) => (
+            <LinkButton key={href} href={href} variant="secondary">
+              {label}
+            </LinkButton>
+          ))}
         </div>
       </section>
 

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
 
 export const metadata: Metadata = {
-  title: "How TuitionList Works",
-  description: "Learn how parents, carers, students, tutors, teachers, and tuition providers use TuitionList.",
+  title: "How TuitionList Works | Find and Contact Tutors Directly",
+  description: "Learn how TuitionList helps parents and students find independent tutors and contact them directly.",
   alternates: { canonical: "/how-it-works" }
 };
 
 export default function HowItWorksPage() {
   return (
-    <StaticPage title="How TuitionList works">
+    <StaticPage title="How TuitionList Works">
       <p>
         Parents, carers, and students can search published tutor and tuition provider profiles by subject, level, location, tuition type, and rate.
       </p>

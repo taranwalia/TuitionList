@@ -3,9 +3,9 @@ import { CheckCircle2 } from "lucide-react";
 import { LinkButton, Panel } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Create a Free Tutor Profile",
+  title: "List as a Tutor for Free | Join TuitionList UK",
   description:
-    "Create a free tutor profile on TuitionList and receive parent enquiries with no commission, no finder fees, and no paid listings.",
+    "Join TuitionList and create a free tutor profile. Advertise your private tuition services to parents and students across the UK.",
   alternates: {
     canonical: "/become-a-tutor"
   }
@@ -15,7 +15,7 @@ export default function BecomeTutorPage() {
   return (
     <section className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
       <div>
-        <h1 className="text-4xl font-bold text-navy-900">Create your free tutor profile</h1>
+        <h1 className="text-4xl font-bold text-navy-900">List Your Tutor Profile for Free</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">
           Add your subjects, levels, location, online/in-person availability, rates, qualifications, DBS status, safeguarding training, insurance,
           and experience. Once submitted, your profile will be reviewed before going live.
