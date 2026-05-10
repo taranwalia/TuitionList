@@ -4,7 +4,7 @@ import { Button, Field, inputClass } from "@/components/ui";
 
 export function SearchBox({ compact = false }: { compact?: boolean }) {
   return (
-    <form action="/find-a-tutor" className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-soft md:grid-cols-5">
+    <form action="/find-a-tutor" className="grid gap-3 rounded-lg border border-navy-100 bg-white p-4 shadow-lift md:grid-cols-5">
       <Field label="Subject">
         <select name="subject" className={inputClass} defaultValue="">
           <option value="">Any subject</option>

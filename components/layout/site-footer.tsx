@@ -1,4 +1,5 @@
 import { BrandLogo } from "@/components/layout/brand-logo";
+import Link from "next/link";
 
 const links = [
   ["Find a Tutor", "/find-a-tutor"],
@@ -16,9 +17,9 @@ const links = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50">
+    <footer className="border-t border-navy-100 bg-white">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col justify-between gap-4 md:flex-row">
+        <div className="flex flex-col justify-between gap-4 rounded-lg border border-navy-100 bg-sky-50 p-5 md:flex-row">
           <div>
             <BrandLogo imageClassName="h-9 w-36" />
             <p className="mt-1 max-w-2xl text-sm text-slate-600">
@@ -27,9 +28,9 @@ export function SiteFooter() {
           </div>
           <nav className="flex flex-wrap gap-4 text-sm font-medium text-slate-600">
             {links.map(([label, href]) => (
-              <a key={href} href={href} className="hover:text-navy-900">
+              <Link key={href} href={href} className="hover:text-navy-900">
                 {label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>

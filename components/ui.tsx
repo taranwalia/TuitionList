@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export function Button({
@@ -9,9 +10,9 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition",
-        variant === "primary" && "bg-navy-800 text-white hover:bg-navy-900",
-        variant === "secondary" && "border border-navy-200 bg-white text-navy-900 hover:bg-navy-50",
+        "inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-leaf-100",
+        variant === "primary" && "bg-navy-900 text-white shadow-soft hover:bg-navy-800",
+        variant === "secondary" && "border border-navy-200 bg-white text-navy-900 hover:border-navy-300 hover:bg-sky-50",
         variant === "ghost" && "text-navy-800 hover:bg-navy-50",
         className
       )}
@@ -32,18 +33,18 @@ export function LinkButton({
   variant?: "primary" | "secondary" | "ghost";
 }) {
   return (
-    <a
+    <Link
       href={href}
       className={cn(
-        "inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition",
-        variant === "primary" && "bg-navy-800 text-white hover:bg-navy-900",
-        variant === "secondary" && "border border-navy-200 bg-white text-navy-900 hover:bg-navy-50",
+        "inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-leaf-100",
+        variant === "primary" && "bg-navy-900 text-white shadow-soft hover:bg-navy-800",
+        variant === "secondary" && "border border-navy-200 bg-white text-navy-900 hover:border-navy-300 hover:bg-sky-50",
         variant === "ghost" && "text-navy-800 hover:bg-navy-50",
         className
       )}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 
@@ -82,4 +83,4 @@ export function Field({
 }
 
 export const inputClass =
-  "min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-navy-900 outline-none transition placeholder:text-slate-400 focus:border-navy-700 focus:ring-2 focus:ring-navy-100";
+  "min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-navy-900 outline-none transition placeholder:text-slate-400 focus:border-leaf-600 focus:ring-2 focus:ring-leaf-100";

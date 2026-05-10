@@ -22,10 +22,22 @@ const config: Config = {
           100: "#d1fadf",
           600: "#039855",
           700: "#027a48"
+        },
+        gold: {
+          50: "#fff7e6",
+          100: "#ffedbf",
+          500: "#f59e0b",
+          700: "#b45309"
+        },
+        sky: {
+          50: "#eef9ff",
+          100: "#d9f1ff",
+          600: "#0284c7"
         }
       },
       boxShadow: {
-        soft: "0 12px 30px rgba(11, 37, 69, 0.08)"
+        soft: "0 12px 30px rgba(11, 37, 69, 0.08)",
+        lift: "0 22px 60px rgba(11, 37, 69, 0.13)"
       }
     }
   },
