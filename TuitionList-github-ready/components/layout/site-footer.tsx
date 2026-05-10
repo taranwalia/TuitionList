@@ -7,8 +7,6 @@ const links = [
   ["Free Directory", "/free-tutor-directory-uk"],
   ["Subjects", "/subjects"],
   ["Locations", "/locations"],
-  ["Guides", "/guides"],
-  ["Profile Checks", "/profile-checks"],
   ["About", "/about"],
   ["Contact", "/contact"],
   ["Safeguarding", "/safeguarding"],

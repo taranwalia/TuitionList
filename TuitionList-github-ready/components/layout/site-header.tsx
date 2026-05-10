@@ -9,7 +9,6 @@ const navItems = [
   ["Find a Tutor", "/find-a-tutor"],
   ["Online Tutors", "/online-tutors"],
   ["Subjects", "/subjects"],
-  ["Guides", "/guides"],
   ["Become a Tutor", "/become-a-tutor"],
   ["How It Works", "/how-it-works"],
   ["Safeguarding", "/safeguarding"]
