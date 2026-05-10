@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { canUseDemoData } from "@/lib/demo-mode";
 import { sendEmail } from "@/lib/email";
+import { accountDeletedEmail, profileApprovedEmail, profileRejectedEmail, profileSuspendedEmail } from "@/lib/email-templates";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export async function moderateTutor(formData: FormData) {
@@ -35,10 +36,16 @@ export async function moderateTutor(formData: FormData) {
     const { data: owner } = await supabase.from("profiles").select("email").eq("auth_user_id", data.user_id).single();
     const email = owner?.email;
     if (email) {
+      const template =
+        status === "published"
+          ? profileApprovedEmail(data.display_name)
+          : status === "rejected"
+            ? profileRejectedEmail(data.display_name, rejectionReason)
+            : profileSuspendedEmail(data.display_name);
+
       await sendEmail({
         to: email,
-        subject: status === "published" ? "Your TuitionList profile is live" : `Your TuitionList profile is ${status}`,
-        html: `<p>Your profile status is now <strong>${status}</strong>.</p>${rejectionReason ? `<p>${rejectionReason}</p>` : ""}`
+        ...template
       });
     }
   } catch {
@@ -108,6 +115,8 @@ export async function deleteTutorAccount(formData: FormData) {
     if (tutor.user_id === adminUser.id) throw new Error("You cannot delete your own admin account from this screen.");
 
     const adminSupabase = createSupabaseAdminClient();
+    const { data: owner } = await adminSupabase.from("profiles").select("email").eq("auth_user_id", tutor.user_id).single();
+    const ownerEmail = owner?.email;
 
     const [{ data: profilePhotoObjects }, { data: verificationObjects }] = await Promise.all([
       adminSupabase.storage.from("profile-photos").list(tutor.user_id),
@@ -121,6 +130,13 @@ export async function deleteTutorAccount(formData: FormData) {
       profilePhotoPaths.length ? adminSupabase.storage.from("profile-photos").remove(profilePhotoPaths) : Promise.resolve(),
       verificationPaths.length ? adminSupabase.storage.from("verification-documents").remove(verificationPaths) : Promise.resolve()
     ]);
+
+    if (ownerEmail) {
+      await sendEmail({
+        to: ownerEmail,
+        ...accountDeletedEmail(tutor.display_name)
+      });
+    }
 
     const { error: deleteUserError } = await adminSupabase.auth.admin.deleteUser(tutor.user_id);
     if (deleteUserError) throw deleteUserError;

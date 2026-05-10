@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { canUseDemoData } from "@/lib/demo-mode";
-import { sendEmail } from "@/lib/email";
+import { parseEmailRecipients, sendEmail } from "@/lib/email";
+import { adminProfileSubmittedEmail, profileSubmittedEmail } from "@/lib/email-templates";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
@@ -202,18 +203,16 @@ export async function submitTutorProfile(formData: FormData) {
   if (!saved && !canUseDemoData()) redirect("/tutor-dashboard/profile?error=Unable to save profile.");
 
   await Promise.all([
-    process.env.ADMIN_EMAIL
+    parseEmailRecipients(process.env.ADMIN_EMAIL).length
       ? sendEmail({
-          to: process.env.ADMIN_EMAIL,
-          subject: "New tutor profile awaiting approval",
-          html: `<p>${displayName} submitted a TuitionList profile for review.</p>`
+          to: parseEmailRecipients(process.env.ADMIN_EMAIL),
+          ...adminProfileSubmittedEmail(displayName)
         })
       : Promise.resolve(),
     tutorEmail
       ? sendEmail({
           to: tutorEmail,
-          subject: "Your TuitionList profile is pending review",
-          html: "<p>Thanks. We have received your tutor profile and it is pending admin review.</p>"
+          ...profileSubmittedEmail(displayName)
         })
       : Promise.resolve()
   ]);

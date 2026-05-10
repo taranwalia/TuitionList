@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { canUseDemoData } from "@/lib/demo-mode";
-import { sendEmail } from "@/lib/email";
+import { parseEmailRecipients, sendEmail } from "@/lib/email";
+import { parentEnquiryAdminEmail, parentEnquiryConfirmationEmail, parentEnquiryTutorEmail } from "@/lib/email-templates";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { enquirySchema } from "@/lib/validation";
@@ -71,26 +72,23 @@ export async function submitEnquiry(formData: FormData) {
     }
   }
 
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminEmails = parseEmailRecipients(process.env.ADMIN_EMAIL);
   await Promise.all([
     tutorEmail
       ? sendEmail({
           to: tutorEmail,
-          subject: "New TuitionList parent enquiry",
-          html: `<p>You have a new enquiry from ${enquiry.parentName}.</p><p>${enquiry.message}</p>`
+          ...parentEnquiryTutorEmail(enquiry.parentName, enquiry.message)
         })
       : Promise.resolve(),
-    adminEmail
+    adminEmails.length
       ? sendEmail({
-          to: adminEmail,
-          subject: "New TuitionList parent enquiry",
-          html: `<p>A new enquiry was submitted for tutor ${enquiry.tutorId}.</p><p>${enquiry.message}</p>`
+          to: adminEmails,
+          ...parentEnquiryAdminEmail(enquiry.tutorId, enquiry.parentName, enquiry.message)
         })
       : Promise.resolve(),
     sendEmail({
       to: enquiry.parentEmail,
-      subject: "Your TuitionList enquiry has been sent",
-      html: "<p>Thanks. Your enquiry has been sent to the tutor where their profile and account settings allow it.</p>"
+      ...parentEnquiryConfirmationEmail()
     })
   ]);
 

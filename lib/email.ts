@@ -6,6 +6,15 @@ type EmailPayload = {
   html: string;
 };
 
+export function parseEmailRecipients(value: string | undefined) {
+  return (
+    value
+      ?.split(",")
+      .map((email) => email.trim())
+      .filter(Boolean) ?? []
+  );
+}
+
 export async function sendEmail(payload: EmailPayload) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM ?? "TuitionList <hello@tuitionlist.co.uk>";
@@ -19,8 +28,17 @@ export async function sendEmail(payload: EmailPayload) {
   }
 
   const resend = new Resend(apiKey);
-  return resend.emails.send({
-    from,
-    ...payload
-  });
+  try {
+    return await resend.emails.send({
+      from,
+      ...payload
+    });
+  } catch (error) {
+    console.error("Email failed to send.", {
+      to: payload.to,
+      subject: payload.subject,
+      error: error instanceof Error ? error.message : "Unknown email error"
+    });
+    return { error: true };
+  }
 }

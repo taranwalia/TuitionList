@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { accountCreatedEmail } from "@/lib/email-templates";
+import { sendEmail } from "@/lib/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -60,6 +62,11 @@ export async function signUpTutor(formData: FormData) {
 
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) throw signInError;
+
+    await sendEmail({
+      to: email,
+      ...accountCreatedEmail()
+    });
   } catch (error) {
     redirect(`/signup?error=${encodeURIComponent(signUpErrorMessage(error))}`);
   }
