@@ -17,8 +17,10 @@ export default async function TutorProfileEditPage({
   const error = Array.isArray(params.error) ? params.error[0] : params.error;
   const warning = Array.isArray(params.warning) ? params.warning[0] : params.warning;
   const qualification = profile?.qualifications?.[0];
-  const selectedSubjects = Array.isArray(profile?.subjects) ? profile.subjects.filter((subject) => SUBJECTS.includes(subject)) : [];
-  const selectedLevels = Array.isArray(profile?.levels) ? profile.levels.filter((level) => LEVELS.includes(level)) : [];
+  const subjectOptions = new Set<string>(SUBJECTS);
+  const levelOptions = new Set<string>(LEVELS);
+  const selectedSubjects = Array.isArray(profile?.subjects) ? profile.subjects.filter((subject) => subjectOptions.has(subject)) : [];
+  const selectedLevels = Array.isArray(profile?.levels) ? profile.levels.filter((level) => levelOptions.has(level)) : [];
 
   return (
     <section className="bg-slate-50">
