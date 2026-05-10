@@ -84,24 +84,27 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-          <Panel className="self-start overflow-hidden border-navy-800 bg-navy-900 p-0 text-white shadow-lift">
-            <div className="border-b border-white/10 bg-white/5 p-5">
+          <Panel
+            className="self-start overflow-hidden p-0 text-white shadow-lift"
+            style={{ backgroundColor: "#0b2545", borderColor: "#0b2545" }}
+          >
+            <div className="border-b p-5" style={{ borderColor: "rgba(255, 255, 255, 0.16)", backgroundColor: "rgba(255, 255, 255, 0.06)" }}>
               <Search className="size-10 text-leaf-100" aria-hidden />
               <h2 className="mt-4 text-2xl font-bold text-white">Search by what matters</h2>
-              <p className="mt-3 leading-7 text-sky-50">
+              <p className="mt-3 leading-7 text-white">
                 Search by subject, level, UK location, online or in-person availability, and hourly rate. Clear profiles without agency commission.
               </p>
             </div>
-            <div className="grid gap-3 p-5 text-sm text-sky-50">
-              <span className="flex items-center gap-3 rounded-md bg-white/10 px-3 py-2">
+            <div className="grid gap-3 p-5 text-sm text-white">
+              <span className="flex items-center gap-3 rounded-md px-3 py-2" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
                 <MapPin className="size-4 text-gold-100" aria-hidden />
                 National UK search
               </span>
-              <span className="flex items-center gap-3 rounded-md bg-white/10 px-3 py-2">
+              <span className="flex items-center gap-3 rounded-md px-3 py-2" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
                 <MessageSquareText className="size-4 text-leaf-100" aria-hidden />
                 Send enquiries directly
               </span>
-              <span className="flex items-center gap-3 rounded-md bg-white/10 px-3 py-2">
+              <span className="flex items-center gap-3 rounded-md px-3 py-2" style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}>
                 <CheckCircle2 className="size-4 text-sky-100" aria-hidden />
                 Free tutor discovery
               </span>
