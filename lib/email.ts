@@ -7,12 +7,13 @@ type EmailPayload = {
 };
 
 export function parseEmailRecipients(value: string | undefined) {
-  return (
+  const recipients =
     value
       ?.split(",")
       .map((email) => email.trim())
-      .filter(Boolean) ?? []
-  );
+      .filter(Boolean) ?? [];
+
+  return Array.from(new Map(recipients.map((email) => [email.toLowerCase(), email])).values());
 }
 
 export async function sendEmail(payload: EmailPayload) {

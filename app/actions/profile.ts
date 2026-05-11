@@ -51,6 +51,7 @@ export async function submitTutorProfile(formData: FormData) {
   let tutorEmail: string | undefined;
   let saved = false;
   let photoWarning: string | null = null;
+  let shouldSendSubmissionEmails = false;
 
   try {
     const supabase = await createSupabaseServerClient();
@@ -64,6 +65,13 @@ export async function submitTutorProfile(formData: FormData) {
     tutorEmail = user.email;
     const slug = slugify(`${displayName} ${subjects[0] ?? "tutor"} ${profileInput.town} ${user.id.slice(0, 8)}`);
     const profilePhoto = formData.get("profilePhoto");
+    const { data: existingProfile, error: existingProfileError } = await supabase
+      .from("tutor_profiles")
+      .select("status")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (existingProfileError) throw existingProfileError;
+    shouldSendSubmissionEmails = existingProfile?.status !== "pending";
 
     const { data: profile, error } = await supabase
       .from("tutor_profiles")
@@ -197,26 +205,29 @@ export async function submitTutorProfile(formData: FormData) {
   }
 
   if (unauthenticated) redirect("/login");
+  if (!saved && !canUseDemoData()) redirect("/tutor-dashboard/profile?error=Unable to save profile.");
+
+  if (saved && shouldSendSubmissionEmails) {
+    const adminEmails = parseEmailRecipients(process.env.ADMIN_EMAIL);
+    await Promise.all([
+      adminEmails.length
+        ? sendEmail({
+            to: adminEmails,
+            ...adminProfileSubmittedEmail(displayName)
+          })
+        : Promise.resolve(),
+      tutorEmail
+        ? sendEmail({
+            to: tutorEmail,
+            ...profileSubmittedEmail(displayName)
+          })
+        : Promise.resolve()
+    ]);
+  }
+
+  revalidatePath("/tutor-dashboard");
   if (saved && photoWarning) {
     redirect(`/tutor-dashboard/profile?warning=${encodeURIComponent(`Profile saved, but photo upload failed: ${photoWarning}`)}`);
   }
-  if (!saved && !canUseDemoData()) redirect("/tutor-dashboard/profile?error=Unable to save profile.");
-
-  await Promise.all([
-    parseEmailRecipients(process.env.ADMIN_EMAIL).length
-      ? sendEmail({
-          to: parseEmailRecipients(process.env.ADMIN_EMAIL),
-          ...adminProfileSubmittedEmail(displayName)
-        })
-      : Promise.resolve(),
-    tutorEmail
-      ? sendEmail({
-          to: tutorEmail,
-          ...profileSubmittedEmail(displayName)
-        })
-      : Promise.resolve()
-  ]);
-
-  revalidatePath("/tutor-dashboard");
   redirect(saved ? "/tutor-dashboard?submitted=1" : "/tutor-dashboard?demo=1");
 }
