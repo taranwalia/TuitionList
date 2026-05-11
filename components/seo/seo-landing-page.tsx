@@ -9,7 +9,11 @@ import type { DirectoryFilters, TutorProfile } from "@/types/domain";
 
 export async function SeoLandingPage({ page }: { page: SeoPage }) {
   const breadcrumbs = breadcrumbItems(page.path, page.h1);
-  const analyticsEvent = page.path.startsWith("/locations/") || page.path.startsWith("/tutors/") ? "location_page_viewed" : page.path.includes("tutors") ? "subject_page_viewed" : undefined;
+  const analyticsEvent = page.tutorSearch?.location
+    ? "location_page_viewed"
+    : page.tutorSearch?.subject || page.path.includes("tutors")
+      ? "subject_page_viewed"
+      : undefined;
   const tutorResults = page.tutorSearch ? await tutorsForSeoPage(page) : null;
 
   return (
@@ -35,10 +39,16 @@ export async function SeoLandingPage({ page }: { page: SeoPage }) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "CollectionPage",
+            "@type": page.path.startsWith("/guides/") && page.path !== "/guides" ? "Article" : "CollectionPage",
             name: page.h1,
+            headline: page.h1,
             description: page.description,
             url: canonicalUrl(page.path),
+            publisher: {
+              "@type": "Organization",
+              name: "TuitionList",
+              url: canonicalUrl("/")
+            },
             isPartOf: {
               "@type": "WebSite",
               name: "TuitionList",
@@ -233,7 +243,7 @@ function StructuredTutorSeoSections({ page }: { page: SeoPage }) {
       <div className="grid gap-6 lg:grid-cols-2">
         {page.tutorSearch?.nearbyLinks?.length ? (
           <Panel>
-            <h2 className="text-2xl font-bold text-navy-900">Nearby areas{location ? ` near ${location}` : ""}</h2>
+            <h2 className="text-2xl font-bold text-navy-900">{location ? `Nearby areas near ${location}` : "Popular tutor locations"}</h2>
             <div className="mt-5 flex flex-wrap gap-3">
               {page.tutorSearch.nearbyLinks.map((link) => (
                 <LinkButton key={link.href} href={link.href} variant="secondary">

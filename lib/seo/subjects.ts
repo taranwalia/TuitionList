@@ -20,7 +20,7 @@ const prioritySlugs = new Set([
 ]);
 
 const relatedBySlug: Record<string, string[]> = {
-  maths: ["english", "science", "gcse-maths"],
+  maths: ["physics", "statistics", "further-maths", "gcse-maths", "a-level-maths"],
   english: ["english-language", "english-literature", "creative-writing"],
   science: ["combined-science", "triple-science", "biology"],
   biology: ["science", "chemistry", "physics"],
@@ -70,7 +70,13 @@ const subjectNames = [
   "KS2",
   "KS3",
   "GCSE",
+  "GCSE Maths",
+  "GCSE English",
+  "GCSE Science",
   "A-Level",
+  "A-Level Maths",
+  "A-Level English",
+  "A-Level Science",
   "Further Maths",
   "Statistics",
   "Mechanics",

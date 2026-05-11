@@ -71,6 +71,31 @@ export default async function TutorProfilePage({
     description: tutor.short_bio,
     knowsAbout: tutor.subjects
   };
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: tutor.display_name,
+    url: `${SITE_URL}/tutor/${tutor.slug}`,
+    description: tutor.short_bio,
+    image: tutor.profile_photo_url ?? undefined,
+    priceRange: `£${tutor.min_rate}-£${tutor.max_rate} per hour`,
+    areaServed: [
+      {
+        "@type": "Place",
+        name: `${tutor.town}, ${tutor.county}`
+      },
+      ...(tutor.online_available ? [{ "@type": "Country", name: "United Kingdom" }] : [])
+    ],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: tutor.town,
+      addressRegion: tutor.county,
+      postalCode: tutor.postcode_area,
+      addressCountry: "GB"
+    },
+    knowsAbout: tutor.subjects,
+    serviceType: tutor.levels.map((level) => `${level} tuition`)
+  };
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -86,6 +111,7 @@ export default async function TutorProfilePage({
     <section className="bg-slate-50">
       <TrackEvent name="tutor_profile_viewed" properties={{ tutorId: tutor.id, slug: tutor.slug, subject: primarySubject, location: tutor.town }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8">
         <div className="grid gap-6">

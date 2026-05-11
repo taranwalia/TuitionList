@@ -38,3 +38,57 @@ export const tutorSignupFaqs: SeoFaq[] = [
       "No. TuitionList does not take commission from tutor lesson fees and does not process lesson payments."
   }
 ];
+
+export function subjectTutorFaqs(subject: string): SeoFaq[] {
+  const subjectLower = subject.toLowerCase();
+  return [
+    {
+      question: `How do I find a ${subject} tutor near me?`,
+      answer: `Use TuitionList to search for ${subjectLower} tutors by location, level, online availability and tutor profile details.`
+    },
+    {
+      question: `Can I find online ${subject} tutors?`,
+      answer:
+        "Yes. Many tutors offer online lessons, so you can search beyond your local area and find a tutor who fits your subject and level."
+    },
+    {
+      question: `How much does a ${subject} tutor cost?`,
+      answer:
+        "Tutor prices vary depending on experience, subject, level and location. Each tutor sets their own rates, which should be shown on their profile."
+    },
+    {
+      question: `What should I look for in a ${subject} tutor?`,
+      answer:
+        "Look for relevant subject experience, clear profile information, reviews where available, DBS or background-check information, and a teaching style that suits the learner."
+    },
+    {
+      question: "Are tutors on TuitionList employed by TuitionList?",
+      answer:
+        "No. TuitionList is a directory that helps parents and students discover independent tutors. Arrangements are made directly with the tutor."
+    },
+    {
+      question: "Is TuitionList free?",
+      answer: "TuitionList is designed as a free UK tutor directory for parents, students and tutors."
+    }
+  ];
+}
+
+export function levelTutorFaqs(level: string): SeoFaq[] {
+  return [
+    {
+      question: `How do I find a ${level} tutor near me?`,
+      answer: `Use TuitionList to search for ${level} tutors by subject, location, online availability and tutor profile details.`
+    },
+    {
+      question: `Can I find online ${level} tutors?`,
+      answer:
+        "Yes. Many tutors offer online lessons, so you can search beyond your local area and find a tutor who fits the learner's subject and level."
+    },
+    {
+      question: `How much does a ${level} tutor cost?`,
+      answer:
+        "Tutor prices vary depending on experience, subject, level and location. Each tutor sets their own rates, which should be shown on their profile."
+    },
+    ...coreSeoFaqs.slice(1, 4)
+  ];
+}

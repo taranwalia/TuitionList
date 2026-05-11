@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowRight, CheckCircle2, MapPin, MessageSquareText, Search, ShieldAlert, Sparkles, UserRoundPlus } from "lucide-react";
 import { LinkButton, Panel } from "@/components/ui";
 import { SearchBox } from "@/components/directory/search-box";
-import { DIRECTORY_DISCLAIMER } from "@/lib/constants";
+import { DIRECTORY_DISCLAIMER, SITE_URL } from "@/lib/constants";
 
 const parentBenefits = [
   "Search tutors by subject, level and location",
@@ -84,8 +84,8 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "TuitionList",
-    url: "https://tuitionlist.co.uk",
-    logo: "https://tuitionlist.co.uk/brand/tuitionlist-logo.png",
+    url: SITE_URL,
+    logo: `${SITE_URL}/brand/tuitionlist-logo.png`,
     description: "A free UK tutor directory for independent tutors, teachers, tuition providers, parents, carers, and students."
   };
 
@@ -93,10 +93,10 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "TuitionList",
-    url: "https://tuitionlist.co.uk",
+    url: SITE_URL,
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://tuitionlist.co.uk/find-a-tutor?keyword={search_term_string}",
+      target: `${SITE_URL}/find-a-tutor?keyword={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };

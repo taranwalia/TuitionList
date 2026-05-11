@@ -100,6 +100,9 @@ Important public SEO routes include:
 - `/tutors/[location]`
 - `/tutors/[location]/[subject]`
 - `/tutors/[location]/[subject]/[level]`
+- `/tutors/[subject]/[level]`
+- `/tutors/[level]/[subject]`
+- `/tutors/[location]/[level]/[subject]`
 - `/online-tutors`
 - `/online-tutors/[subject]`
 - `/online-tutors/[subject]/[level]`
@@ -226,6 +229,8 @@ Reusable SEO data and templates live in `lib/seo/`:
 - `internalLinks.ts`
 
 The SEO system generates metadata, canonical URLs, Open Graph/Twitter metadata, breadcrumb schema, FAQ schema, CollectionPage schema, capped sitemap entries, and related internal links for priority pages. It deliberately avoids generating millions of thin pages at launch.
+
+Subject, level, location, subject + level, subject + location, and subject + level + location pages are generated from the reusable data files in `lib/seo/`. Subject pages link to online, GCSE, A-Level, location, related subject, and tutor sign-up pages. Location pages link to core subject pages for that area, online tutors, and nearby towns. Blog-style guide pages use Article schema where appropriate.
 
 ## Storage
 

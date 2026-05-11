@@ -1,6 +1,6 @@
-import { coreSeoFaqs, tutorSignupFaqs } from "@/lib/seo/faqs";
+import { coreSeoFaqs, levelTutorFaqs, subjectTutorFaqs, tutorSignupFaqs } from "@/lib/seo/faqs";
 import { findCompetitorKeywordCluster } from "@/lib/seo/competitorKeywords";
-import { baseInternalLinks, levelLinks, nearbyLocationLinks, subjectLinks } from "@/lib/seo/internalLinks";
+import { baseInternalLinks, combinedTutorSeoLinks, nearbyLocationLinks, subjectLinks } from "@/lib/seo/internalLinks";
 import { renderKeywordPatterns } from "@/lib/seo/keywordPatterns";
 import type { SeoLevel } from "@/lib/seo/levels";
 import type { SeoLocation } from "@/lib/seo/locations";
@@ -66,7 +66,7 @@ export function tutorRouteTemplate({ subject, location, level, onlineOnly, path 
         body: relatedSearches.join(", ")
       }
     ],
-    faqs: coreSeoFaqs,
+    faqs: subjectName ? subjectTutorFaqs(subjectName).slice(0, 6) : levelName ? levelTutorFaqs(levelName).slice(0, 6) : coreSeoFaqs,
     tutorSearch: {
       subject: subject?.name,
       subjectSlug: subject?.slug,
@@ -78,12 +78,7 @@ export function tutorRouteTemplate({ subject, location, level, onlineOnly, path 
       nearbyLinks: nearbyLocationLinks(location?.slug).slice(0, 8),
       relatedSubjectLinks: subjectLinks(subject?.slug).slice(0, 8)
     },
-    links: [
-      ...baseInternalLinks(),
-      ...subjectLinks(subject?.slug),
-      ...levelLinks(),
-      ...nearbyLocationLinks(location?.slug)
-    ].slice(0, 12)
+    links: combinedTutorSeoLinks({ subjectSlug: subject?.slug, locationSlug: location?.slug, levelSlug: level?.slug })
   };
 }
 

@@ -276,6 +276,38 @@ export const staticSeoPages: SeoPage[] = [
     ]
   },
   {
+    path: "/become-a-tutor",
+    title: "List as a Tutor for Free | Join TuitionList UK",
+    description: "Join TuitionList and create a free tutor profile. Advertise your private tuition services to parents and students across the UK.",
+    h1: "List Your Tutor Profile for Free",
+    intro:
+      "Create a free tutor profile on TuitionList so parents, carers, and students can find your tutoring services locally and online.",
+    sections: [
+      {
+        heading: "Free tutor profiles",
+        body:
+          "Add your subjects, levels, location, online or in-person availability, rates, qualifications, DBS status, safeguarding training, insurance, and experience. Profiles are reviewed before going live."
+      },
+      {
+        heading: "No commission",
+        body:
+          "TuitionList does not take lesson commission or charge parent finder fees. Parents contact you through enquiries on your published profile."
+      },
+      {
+        heading: "Profile checks where possible",
+        body:
+          "Where possible, TuitionList may review evidence you provide. Badges, blue ticks, and profile labels show what has been self-declared, seen, or confirmed, and do not mean TuitionList recommends or guarantees a tutor."
+      }
+    ],
+    links: [
+      { href: "/signup", label: "Start free profile" },
+      { href: "/how-it-works", label: "How TuitionList works" },
+      { href: "/free-tutor-listing-uk", label: "Free tutor listing UK" },
+      { href: "/no-commission-tutor-platform", label: "No commission tutor platform" },
+      { href: "/profile-checks", label: "Profile checks explained" }
+    ]
+  },
+  {
     path: "/local-tutors-uk",
     title: "Local Tutors UK | TuitionList",
     description: "Search local tutors and tuition providers across the UK by subject, level, location, tuition type, and rate.",
@@ -1053,7 +1085,7 @@ export const curatedSeoPages: SeoPage[] = [
   subjectAliasPage("subjects/gcse-maths", "GCSE Maths", "GCSE Maths Tutors UK")
 ];
 
-export const allIndexableSeoPages = dedupeSeoPages([...staticSeoPages, ...curatedSeoPages, ...guideSeoPages, ...trustSeoPages, ...tutorGrowthSeoPages]);
+export const allIndexableSeoPages = ensureMinimumSeoLinks(dedupeSeoPages([...staticSeoPages, ...curatedSeoPages, ...guideSeoPages, ...trustSeoPages, ...tutorGrowthSeoPages]));
 
 export function getSeoPage(path: string) {
   const normalized = path.replace(/^\/+|\/+$/g, "");
@@ -1077,15 +1109,26 @@ export function getTutorsSeoPage(parts: string[]) {
     const level = findSeoLevel(parts[1]);
     if (subject && level) return tutorRouteTemplate({ subject, level, path: `/tutors/${parts.join("/")}` });
 
+    const levelFirst = findSeoLevel(parts[0]);
+    const subjectSecond = findSeoSubject(parts[1]);
+    if (levelFirst && subjectSecond) return tutorRouteTemplate({ subject: subjectSecond, level: levelFirst, path: `/tutors/${parts.join("/")}` });
+
     const location = findSeoLocation(parts[0]);
     const locationSubject = findSeoSubject(parts[1]);
     if (location && locationSubject) return tutorRouteTemplate({ location, subject: locationSubject, path: `/tutors/${parts.join("/")}` });
+
+    const locationLevel = findSeoLevel(parts[1]);
+    if (location && locationLevel) return tutorRouteTemplate({ location, level: locationLevel, path: `/tutors/${parts.join("/")}` });
   }
   if (parts.length === 3) {
     const location = findSeoLocation(parts[0]);
     const subject = findSeoSubject(parts[1]);
     const level = findSeoLevel(parts[2]);
     if (location && subject && level) return tutorRouteTemplate({ location, subject, level, path: `/tutors/${parts.join("/")}` });
+
+    const locationLevel = findSeoLevel(parts[1]);
+    const locationSubject = findSeoSubject(parts[2]);
+    if (location && locationLevel && locationSubject) return tutorRouteTemplate({ location, subject: locationSubject, level: locationLevel, path: `/tutors/${parts.join("/")}` });
   }
   return null;
 }
@@ -1193,6 +1236,13 @@ export function metadataForSeoPage(page: SeoPage): Metadata {
 
 function dedupeSeoPages(pages: SeoPage[]) {
   return Array.from(new Map(pages.map((page) => [page.path, page])).values());
+}
+
+function ensureMinimumSeoLinks(pages: SeoPage[]) {
+  return pages.map((page) => {
+    const links = Array.from(new Map([...(page.links ?? []), ...nationalSeoLinks].map((link) => [link.href, link])).values());
+    return links.length >= 5 ? { ...page, links } : page;
+  });
 }
 
 function kentMedwayPriorityPages() {
