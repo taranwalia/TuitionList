@@ -61,12 +61,28 @@ describe("programmatic SEO system", () => {
     expect(metadataForSeoPage(page!).robots).toEqual({ index: false, follow: true });
   });
 
+  it("does not generate nonsensical subject and level tutor combinations", () => {
+    expect(getTutorsSeoPage(["11-plus", "gcse"])).toBeNull();
+    expect(getTutorsSeoPage(["11-plus", "a-level"])).toBeNull();
+    expect(getTutorsSeoPage(["11-plus", "11-plus"])).toBeNull();
+    expect(getTutorsSeoPage(["gcse", "gcse"])).toBeNull();
+    expect(getTutorsSeoPage(["gcse", "a-level"])).toBeNull();
+    expect(getTutorsSeoPage(["gcse", "ks2"])).toBeNull();
+    expect(getTutorsSeoPage(["gcse-maths", "a-level"])).toBeNull();
+  });
+
+  it("noindexes unsafe verification-claim pages", () => {
+    expect(getSeoPage("/verified-tutors")?.index).toBe(false);
+    expect(getSeoPage("/dbs-checked-tutors")?.index).toBe(false);
+    expect(getDbsCheckedTutorsSeoPage(["maths"])?.index).toBe(false);
+  });
+
   it("keeps indexable SEO pages internally linked", () => {
     const pagesWithoutFiveLinks = allIndexableSeoPages.filter((page) => (page.links ?? []).length < 5);
     expect(pagesWithoutFiveLinks).toEqual([]);
   });
 
-  it("generates a capped set of priority programmatic sitemap pages", () => {
+  it("generates a capped set of priority programmatic SEO pages", () => {
     const pages = priorityProgrammaticSeoPages();
     const paths = pages.map((page) => page.path);
 

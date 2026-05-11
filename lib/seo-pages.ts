@@ -39,6 +39,22 @@ export type SeoPage = {
   };
 };
 
+export const unsafeVerificationClaimPaths = new Set([
+  "/verified-tutors",
+  "/dbs-verified-tutors",
+  "/identity-verified-tutors",
+  "/background-checked-tutors",
+  "/dbs-checked-tutors",
+  "/safe-tutor-directory",
+  "/find-a-safe-tutor",
+  "/qualified-tutors",
+  "/qts-tutors",
+  "/teacher-tutors",
+  "/experienced-tutors",
+  "/tutor-reviews",
+  "/tutor-references"
+]);
+
 export const nationalSeoLinks: SeoLink[] = [
   { href: "/find-a-tutor", label: "Find a tutor" },
   { href: "/online-tutors", label: "Online tutors" },
@@ -1085,7 +1101,9 @@ export const curatedSeoPages: SeoPage[] = [
   subjectAliasPage("subjects/gcse-maths", "GCSE Maths", "GCSE Maths Tutors UK")
 ];
 
-export const allIndexableSeoPages = ensureMinimumSeoLinks(dedupeSeoPages([...staticSeoPages, ...curatedSeoPages, ...guideSeoPages, ...trustSeoPages, ...tutorGrowthSeoPages]));
+export const allIndexableSeoPages = applySeoIndexingRules(
+  ensureMinimumSeoLinks(dedupeSeoPages([...staticSeoPages, ...curatedSeoPages, ...guideSeoPages, ...trustSeoPages, ...tutorGrowthSeoPages]))
+);
 
 export function getSeoPage(path: string) {
   const normalized = path.replace(/^\/+|\/+$/g, "");
@@ -1107,11 +1125,17 @@ export function getTutorsSeoPage(parts: string[]) {
   if (parts.length === 2) {
     const subject = findSeoSubject(parts[0]);
     const level = findSeoLevel(parts[1]);
-    if (subject && level) return tutorRouteTemplate({ subject, level, path: `/tutors/${parts.join("/")}` });
+    if (subject && level) {
+      if (!isValidSubjectLevelCombination(subject.slug, level.slug)) return null;
+      return tutorRouteTemplate({ subject, level, path: `/tutors/${parts.join("/")}` });
+    }
 
     const levelFirst = findSeoLevel(parts[0]);
     const subjectSecond = findSeoSubject(parts[1]);
-    if (levelFirst && subjectSecond) return tutorRouteTemplate({ subject: subjectSecond, level: levelFirst, path: `/tutors/${parts.join("/")}` });
+    if (levelFirst && subjectSecond) {
+      if (!isValidSubjectLevelCombination(subjectSecond.slug, levelFirst.slug)) return null;
+      return tutorRouteTemplate({ subject: subjectSecond, level: levelFirst, path: `/tutors/${parts.join("/")}` });
+    }
 
     const location = findSeoLocation(parts[0]);
     const locationSubject = findSeoSubject(parts[1]);
@@ -1124,11 +1148,17 @@ export function getTutorsSeoPage(parts: string[]) {
     const location = findSeoLocation(parts[0]);
     const subject = findSeoSubject(parts[1]);
     const level = findSeoLevel(parts[2]);
-    if (location && subject && level) return tutorRouteTemplate({ location, subject, level, path: `/tutors/${parts.join("/")}` });
+    if (location && subject && level) {
+      if (!isValidSubjectLevelCombination(subject.slug, level.slug)) return null;
+      return tutorRouteTemplate({ location, subject, level, path: `/tutors/${parts.join("/")}` });
+    }
 
     const locationLevel = findSeoLevel(parts[1]);
     const locationSubject = findSeoSubject(parts[2]);
-    if (location && locationLevel && locationSubject) return tutorRouteTemplate({ location, subject: locationSubject, level: locationLevel, path: `/tutors/${parts.join("/")}` });
+    if (location && locationLevel && locationSubject) {
+      if (!isValidSubjectLevelCombination(locationSubject.slug, locationLevel.slug)) return null;
+      return tutorRouteTemplate({ location, subject: locationSubject, level: locationLevel, path: `/tutors/${parts.join("/")}` });
+    }
   }
   return null;
 }
@@ -1160,7 +1190,10 @@ export function getOnlineTutorsSeoPage(parts: string[]) {
   if (parts.length === 2) {
     const subject = findSeoSubject(parts[0]);
     const level = findSeoLevel(parts[1]);
-    if (subject && level) return tutorRouteTemplate({ subject, level, onlineOnly: true, path: `/online-tutors/${parts.join("/")}` });
+    if (subject && level) {
+      if (!isValidSubjectLevelCombination(subject.slug, level.slug)) return null;
+      return tutorRouteTemplate({ subject, level, onlineOnly: true, path: `/online-tutors/${parts.join("/")}` });
+    }
   }
   return null;
 }
@@ -1191,14 +1224,16 @@ export function priorityProgrammaticSeoPages() {
   priorityLocations.slice(0, 5).forEach((location) => {
     prioritySubjects.slice(0, 4).forEach((subject) => {
       priorityLevels.forEach((level) => {
-        if (level) pages.push(tutorRouteTemplate({ location, subject, level, path: `/tutors/${location.slug}/${subject.slug}/${level.slug}` }));
+        if (level && isValidSubjectLevelCombination(subject.slug, level.slug)) {
+          pages.push(tutorRouteTemplate({ location, subject, level, path: `/tutors/${location.slug}/${subject.slug}/${level.slug}` }));
+        }
       });
     });
   });
 
   prioritySubjects.slice(0, 6).forEach((subject) => {
     priorityLevels.forEach((level) => {
-      if (level) {
+      if (level && isValidSubjectLevelCombination(subject.slug, level.slug)) {
         pages.push(tutorRouteTemplate({ subject, level, path: `/tutors/${subject.slug}/${level.slug}` }));
         pages.push(tutorRouteTemplate({ subject, level, onlineOnly: true, path: `/online-tutors/${subject.slug}/${level.slug}` }));
       }
@@ -1209,7 +1244,7 @@ export function priorityProgrammaticSeoPages() {
 }
 
 export function canonicalUrl(path: string) {
-  return new URL(path, SITE_URL).toString();
+  return new URL(path.trim(), SITE_URL.trim()).toString();
 }
 
 export function metadataForSeoPage(page: SeoPage): Metadata {
@@ -1243,6 +1278,33 @@ function ensureMinimumSeoLinks(pages: SeoPage[]) {
     const links = Array.from(new Map([...(page.links ?? []), ...nationalSeoLinks].map((link) => [link.href, link])).values());
     return links.length >= 5 ? { ...page, links } : page;
   });
+}
+
+function applySeoIndexingRules(pages: SeoPage[]) {
+  return pages.map((page) => (unsafeVerificationClaimPaths.has(page.path.trim()) ? { ...page, index: false } : page));
+}
+
+function isValidSubjectLevelCombination(subjectSlug: string, levelSlug: string) {
+  if (subjectSlug === levelSlug) return false;
+
+  const levelLikeSubjects = new Set(["11-plus", "11", "gcse", "a-level", "ks1", "ks2", "ks3", "primary", "sats", "university"]);
+  const levelSpecificSubjects = new Set([
+    "gcse-maths",
+    "gcse-english",
+    "gcse-science",
+    "a-level-maths",
+    "a-level-english",
+    "a-level-science",
+    "primary-maths",
+    "primary-english",
+    "year-6-sats"
+  ]);
+
+  if (levelLikeSubjects.has(subjectSlug)) return false;
+  if (levelSpecificSubjects.has(subjectSlug)) return false;
+  if (subjectSlug === "entrance-exams" && !["11-plus", "private-school-entrance", "grammar-school-entrance"].includes(levelSlug)) return false;
+
+  return true;
 }
 
 function kentMedwayPriorityPages() {

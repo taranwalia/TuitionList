@@ -89,6 +89,7 @@ export function dbsCheckedSubjectTemplate(subject: SeoSubject): SeoPage {
     title: `DBS Checked ${subject.name} Tutors UK | TuitionList`,
     description: `Browse ${subject.name.toLowerCase()} tutors who display DBS or background-check information on their profiles.`,
     h1: `Find DBS Checked ${subject.name} Tutors`,
+    index: false,
     intro: `Search for ${subject.name.toLowerCase()} tutors who display DBS or background-check information on their TuitionList profiles.`,
     sections: [
       {
