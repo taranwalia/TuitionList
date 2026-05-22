@@ -7,6 +7,7 @@ import { canUseDemoData } from "@/lib/demo-mode";
 import { sendEmail } from "@/lib/email";
 import { accountDeletedEmail, profileApprovedEmail, profileRejectedEmail, profileSuspendedEmail } from "@/lib/email-templates";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { tutorProfileSchema } from "@/lib/validation";
 
 export async function moderateTutor(formData: FormData) {
   const tutorId = String(formData.get("tutorId") ?? "");
@@ -95,6 +96,142 @@ export async function updateTutorChecks(formData: FormData) {
   revalidatePath("/admin/tutors");
   revalidatePath(`/admin/tutors/${tutorId}`);
   redirect(safeReturnTo);
+}
+
+export async function updateTutorProfileAsAdmin(formData: FormData) {
+  const tutorId = String(formData.get("tutorId") ?? "");
+  const returnTo = String(formData.get("returnTo") ?? `/admin/tutors/${tutorId}/edit`);
+  const safeReturnTo = returnTo.startsWith("/admin/") ? returnTo : "/admin/tutors";
+  if (!tutorId) redirect("/admin/tutors?error=Missing tutor");
+
+  const parsed = tutorProfileSchema.safeParse({
+    displayName: formData.get("displayName"),
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone") || undefined,
+    town: formData.get("town"),
+    county: formData.get("county"),
+    postcodeArea: formData.get("postcodeArea"),
+    onlineAvailable: formData.get("onlineAvailable") === "on",
+    inPersonAvailable: formData.get("inPersonAvailable") === "on",
+    willingToTravel: formData.get("willingToTravel") === "on",
+    minRate: formData.get("minRate"),
+    maxRate: formData.get("maxRate"),
+    shortBio: formData.get("shortBio"),
+    longBio: formData.get("longBio"),
+    experience: formData.get("experience"),
+    subjects: formData.getAll("subjects").map(String),
+    levels: formData.getAll("levels").map(String),
+    websiteUrl: formData.get("websiteUrl") || "",
+    linkedinUrl: formData.get("linkedinUrl") || "",
+    qualificationTitle: formData.get("qualificationTitle") || "",
+    qualificationInstitution: formData.get("qualificationInstitution") || "",
+    qualificationYear: formData.get("qualificationYear") || "",
+    qualificationDescription: formData.get("qualificationDescription") || "",
+    showEmail: formData.get("showEmail") === "on",
+    showPhone: formData.get("showPhone") === "on",
+    showWhatsapp: formData.get("showWhatsapp") === "on"
+  });
+
+  if (!parsed.success) {
+    redirect(`${safeReturnTo}?error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Please check the profile form.")}`);
+  }
+
+  await requireAdmin();
+  const profileInput = parsed.data;
+  const adminSupabase = createSupabaseAdminClient();
+
+  try {
+    const { data: existingTutor, error: tutorError } = await adminSupabase
+      .from("tutor_profiles")
+      .select("id, slug")
+      .eq("id", tutorId)
+      .single();
+    if (tutorError || !existingTutor) throw tutorError ?? new Error("Tutor profile not found.");
+
+    const { error: updateError } = await adminSupabase
+      .from("tutor_profiles")
+      .update({
+        display_name: profileInput.displayName,
+        town: profileInput.town,
+        county: profileInput.county,
+        postcode_area: profileInput.postcodeArea.toUpperCase(),
+        online_available: profileInput.onlineAvailable,
+        in_person_available: profileInput.inPersonAvailable,
+        willing_to_travel: profileInput.willingToTravel,
+        min_rate: profileInput.minRate,
+        max_rate: profileInput.maxRate,
+        short_bio: profileInput.shortBio,
+        long_bio: profileInput.longBio,
+        experience: profileInput.experience,
+        website_url: profileInput.websiteUrl || null,
+        linkedin_url: profileInput.linkedinUrl || null,
+        phone: profileInput.phone || null,
+        show_phone: profileInput.showPhone,
+        show_email: profileInput.showEmail,
+        show_whatsapp: profileInput.showWhatsapp
+      })
+      .eq("id", tutorId);
+    if (updateError) throw updateError;
+
+    const [deleteSubjects, deleteLevels] = await Promise.all([
+      adminSupabase.from("tutor_subjects").delete().eq("tutor_id", tutorId),
+      adminSupabase.from("tutor_levels").delete().eq("tutor_id", tutorId)
+    ]);
+    if (deleteSubjects.error) throw deleteSubjects.error;
+    if (deleteLevels.error) throw deleteLevels.error;
+
+    const [{ data: subjectRows, error: subjectError }, { data: levelRows, error: levelError }] = await Promise.all([
+      adminSupabase.from("subjects").select("id,name").in("name", profileInput.subjects),
+      adminSupabase.from("levels").select("id,name").in("name", profileInput.levels)
+    ]);
+    if (subjectError) throw subjectError;
+    if (levelError) throw levelError;
+
+    const [insertSubjects, insertLevels] = await Promise.all([
+      subjectRows?.length
+        ? adminSupabase.from("tutor_subjects").insert(subjectRows.map((subject) => ({ tutor_id: tutorId, subject_id: subject.id })))
+        : Promise.resolve(),
+      levelRows?.length
+        ? adminSupabase.from("tutor_levels").insert(levelRows.map((level) => ({ tutor_id: tutorId, level_id: level.id })))
+        : Promise.resolve()
+    ]);
+    if (insertSubjects && "error" in insertSubjects && insertSubjects.error) throw insertSubjects.error;
+    if (insertLevels && "error" in insertLevels && insertLevels.error) throw insertLevels.error;
+
+    const { data: existingQualification } = await adminSupabase
+      .from("qualifications")
+      .select("admin_checked")
+      .eq("tutor_id", tutorId)
+      .limit(1)
+      .maybeSingle();
+
+    const { error: deleteQualificationsError } = await adminSupabase.from("qualifications").delete().eq("tutor_id", tutorId);
+    if (deleteQualificationsError) throw deleteQualificationsError;
+
+    if (profileInput.qualificationTitle?.trim()) {
+      const { error: qualificationError } = await adminSupabase.from("qualifications").insert({
+        tutor_id: tutorId,
+        title: profileInput.qualificationTitle.trim(),
+        institution: profileInput.qualificationInstitution?.trim() || null,
+        year: profileInput.qualificationYear?.trim() || null,
+        description: profileInput.qualificationDescription?.trim() || null,
+        admin_checked: Boolean(existingQualification?.admin_checked)
+      });
+      if (qualificationError) throw qualificationError;
+    }
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/tutors");
+    revalidatePath(`/admin/tutors/${tutorId}`);
+    revalidatePath(`/admin/tutors/${tutorId}/edit`);
+    revalidatePath("/find-a-tutor");
+    revalidatePath(`/tutor/${existingTutor.slug}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to update tutor profile.";
+    redirect(`${safeReturnTo}?error=${encodeURIComponent(message)}`);
+  }
+
+  redirect(`/admin/tutors/${tutorId}?updated=1`);
 }
 
 export async function deleteTutorAccount(formData: FormData) {

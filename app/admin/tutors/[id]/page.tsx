@@ -20,6 +20,7 @@ export default async function AdminTutorDetailPage({
   const tutor = await getAdminTutorById(id);
   if (!tutor) notFound();
   const error = Array.isArray(query.error) ? query.error[0] : query.error;
+  const updated = (Array.isArray(query.updated) ? query.updated[0] : query.updated) === "1";
 
   return (
     <section className="bg-slate-50">
@@ -41,6 +42,9 @@ export default async function AdminTutorDetailPage({
                 Public profile
               </LinkButton>
             ) : null}
+            <LinkButton href={`/admin/tutors/${tutor.id}/edit`} variant="secondary">
+              Edit profile
+            </LinkButton>
           </div>
 
           <Panel className="grid gap-5 md:grid-cols-[128px_1fr]">
@@ -146,6 +150,11 @@ export default async function AdminTutorDetailPage({
           {error ? (
             <Panel className="border-red-200 bg-red-50">
               <p className="text-sm font-semibold text-red-800">{error}</p>
+            </Panel>
+          ) : null}
+          {updated ? (
+            <Panel className="border-green-200 bg-green-50">
+              <p className="text-sm font-semibold text-green-800">Tutor profile updated. You can now continue reviewing it.</p>
             </Panel>
           ) : null}
 

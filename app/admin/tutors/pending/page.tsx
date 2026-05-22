@@ -1,6 +1,6 @@
 import { moderateTutor } from "@/app/actions/admin";
 import { TutorCard } from "@/components/directory/tutor-card";
-import { Button, Panel } from "@/components/ui";
+import { Button, LinkButton, Panel } from "@/components/ui";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminTutors } from "@/lib/tutors";
 
@@ -19,12 +19,17 @@ export default async function PendingTutorsPage() {
               <p className="text-sm text-slate-600">
                 This profile is pending approval and is not visible publicly yet.
               </p>
-              <form action={moderateTutor} className="flex flex-wrap gap-2">
-                <input type="hidden" name="tutorId" value={tutor.id} />
-                <Button name="action" value="approve" type="submit">Approve</Button>
-                <Button name="action" value="reject" type="submit" variant="secondary">Reject</Button>
-                <Button name="action" value="suspend" type="submit" variant="secondary">Suspend</Button>
-              </form>
+              <div className="flex flex-wrap gap-2">
+                <LinkButton href={`/admin/tutors/${tutor.id}/edit`} variant="secondary">
+                  Edit profile
+                </LinkButton>
+                <form action={moderateTutor} className="flex flex-wrap gap-2">
+                  <input type="hidden" name="tutorId" value={tutor.id} />
+                  <Button name="action" value="approve" type="submit">Approve</Button>
+                  <Button name="action" value="reject" type="submit" variant="secondary">Reject</Button>
+                  <Button name="action" value="suspend" type="submit" variant="secondary">Suspend</Button>
+                </form>
+              </div>
             </Panel>
           </div>
         ))

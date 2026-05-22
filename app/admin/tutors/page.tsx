@@ -64,6 +64,9 @@ export default async function ManageTutorsPage({
               <LinkButton href={`/admin/tutors/${tutor.id}`} variant="secondary">
                 View profile
               </LinkButton>
+              <LinkButton href={`/admin/tutors/${tutor.id}/edit`} variant="secondary">
+                Edit profile
+              </LinkButton>
               <a
                 href={`/admin/tutors/${tutor.id}/data`}
                 className="inline-flex min-h-11 items-center justify-center rounded-md border border-navy-200 bg-white px-4 py-2 text-sm font-semibold text-navy-900 transition hover:bg-navy-50"
