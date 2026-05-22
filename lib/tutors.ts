@@ -58,6 +58,8 @@ const profileSelect = `
   tutor_levels ( levels ( name ) )
 `;
 
+const PUBLIC_QUERY_TIMEOUT_MS = 6000;
+
 type RawTutor = Omit<TutorProfile, "subjects" | "levels" | "checks" | "qualifications"> & {
   checks?: TutorProfile["checks"][] | TutorProfile["checks"] | null;
   qualifications?: TutorProfile["qualifications"] | null;
@@ -88,13 +90,16 @@ async function attachPublicChecks(tutors: TutorProfile[]) {
   if (tutors.length === 0) return tutors;
 
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("public_tutor_checks")
-    .select("*")
-    .in(
-      "tutor_id",
-      tutors.map((tutor) => tutor.id)
-    );
+  const { data, error } = await withTimeout(
+    supabase
+      .from("public_tutor_checks")
+      .select("*")
+      .in(
+        "tutor_id",
+        tutors.map((tutor) => tutor.id)
+      ),
+    PUBLIC_QUERY_TIMEOUT_MS
+  );
   if (error) return tutors;
 
   const checksByTutor = new Map((data as PublicCheckRow[]).map((row) => [row.tutor_id, row]));
@@ -145,7 +150,10 @@ async function attachAdminContactDetails(tutors: TutorProfile[]) {
 export async function getPublishedTutors(filters: DirectoryFilters = {}) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).eq("status", "published");
+    const { data, error } = await withTimeout(
+      supabase.from("tutor_profiles").select(profileSelect).eq("status", "published"),
+      PUBLIC_QUERY_TIMEOUT_MS
+    );
     if (error) throw error;
     const tutors = await attachAdminBadges(await attachPublicChecks((data as unknown as RawTutor[]).map(mapRawTutor)));
     return filterTutors(tutors, filters);
@@ -158,12 +166,15 @@ export async function getPublishedTutors(filters: DirectoryFilters = {}) {
 export async function getTutorBySlug(slug: string) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-      .from("tutor_profiles")
-      .select(profileSelect)
-      .eq("slug", slug)
-      .eq("status", "published")
-      .single();
+    const { data, error } = await withTimeout(
+      supabase
+        .from("tutor_profiles")
+        .select(profileSelect)
+        .eq("slug", slug)
+        .eq("status", "published")
+        .single(),
+      PUBLIC_QUERY_TIMEOUT_MS
+    );
     if (error) throw error;
     return (await attachAdminBadges(await attachPublicChecks([mapRawTutor(data as unknown as RawTutor)])))[0];
   } catch {
@@ -215,5 +226,19 @@ export async function getTutorDashboardProfile(userId: string) {
     return data ? mapRawTutor(data as unknown as RawTutor) : null;
   } catch {
     return null;
+  }
+}
+
+async function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number): Promise<T> {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("Supabase query timed out.")), timeoutMs);
+      })
+    ]);
+  } finally {
+    if (timeout) clearTimeout(timeout);
   }
 }

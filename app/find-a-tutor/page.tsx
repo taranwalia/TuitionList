@@ -15,7 +15,6 @@ export async function generateMetadata({
   const params = await searchParams;
   const filters = filtersFromParams(params);
   const hasSearch = hasActiveSearch(filters);
-  const tutors = hasSearch ? await getPublishedTutors(filters) : [];
 
   return {
     title: "Find a Tutor for Free",
@@ -23,7 +22,7 @@ export async function generateMetadata({
     alternates: {
       canonical: "/find-a-tutor"
     },
-    robots: hasSearch && tutors.length === 0 ? { index: false, follow: true } : { index: true, follow: true },
+    robots: hasSearch ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: "Find a Tutor for Free | TuitionList",
       description: findTutorDescription
