@@ -19,6 +19,16 @@ export function rateLabel(tutor: Pick<TutorProfile, "min_rate" | "max_rate">) {
   return `£${tutor.min_rate}-£${tutor.max_rate}/hr`;
 }
 
+export function outwardPostcode(value?: string | null) {
+  if (!value) return "";
+
+  const normalized = value.trim().toUpperCase().replace(/\s+/g, " ");
+  const compact = normalized.replace(/\s+/g, "");
+  const outwardCode = compact.match(/^([A-Z]{1,2}\d[A-Z\d]?)/)?.[1];
+
+  return outwardCode ?? normalized.split(" ")[0] ?? "";
+}
+
 export function filterTutors(tutors: TutorProfile[], filters: DirectoryFilters) {
   const keyword = filters.keyword?.toLowerCase().trim();
   const location = filters.location?.toLowerCase().trim();

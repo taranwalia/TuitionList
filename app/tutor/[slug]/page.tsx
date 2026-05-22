@@ -9,7 +9,7 @@ import { TrustBadges } from "@/components/profile/trust-badges";
 import { VettedBadge } from "@/components/profile/vetted-badge";
 import { PROFILE_DISCLAIMER, SITE_URL } from "@/lib/constants";
 import { getTutorBySlug } from "@/lib/tutors";
-import { rateLabel } from "@/lib/utils";
+import { outwardPostcode, rateLabel } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -56,6 +56,7 @@ export default async function TutorProfilePage({
   const primarySubject = tutor.subjects[0] ?? "Private";
   const subjectLinks = tutor.subjects.slice(0, 5).map((subject) => ({ href: `/tutors/${slugify(subject)}`, label: `${subject} tutors` }));
   const locationHref = `/tutors/${slugify(tutor.town)}`;
+  const publicPostcode = outwardPostcode(tutor.postcode_area);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -90,7 +91,7 @@ export default async function TutorProfilePage({
       "@type": "PostalAddress",
       addressLocality: tutor.town,
       addressRegion: tutor.county,
-      postalCode: tutor.postcode_area,
+      postalCode: publicPostcode,
       addressCountry: "GB"
     },
     knowsAbout: tutor.subjects,
@@ -137,7 +138,8 @@ export default async function TutorProfilePage({
               <p className="mt-3 flex flex-wrap gap-3 text-sm text-slate-600">
                 <span className="inline-flex items-center gap-1">
                   <MapPin className="size-4" aria-hidden />
-                  {tutor.town}, {tutor.county} ({tutor.postcode_area})
+                  {tutor.town}, {tutor.county}
+                  {publicPostcode ? ` (${publicPostcode})` : ""}
                 </span>
                 {tutor.online_available ? (
                   <span className="inline-flex items-center gap-1">
