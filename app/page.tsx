@@ -4,6 +4,8 @@ import { LinkButton, Panel } from "@/components/ui";
 import { SearchBox } from "@/components/directory/search-box";
 import { DIRECTORY_DISCLAIMER, SITE_URL } from "@/lib/constants";
 
+export const dynamic = "force-static";
+
 const parentBenefits = [
   "Search tutors by subject, level and location",
   "Contact tutors directly through enquiry forms",
