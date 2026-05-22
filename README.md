@@ -42,12 +42,14 @@ Set `NEXT_PUBLIC_ENABLE_DEMO_DATA=true` only for local UI review without Supabas
 1. Create a Supabase project.
 2. Run `supabase/migrations/001_initial_schema.sql` in the SQL editor or through Supabase CLI.
 3. For existing Supabase projects that already ran the first migration before profile photos were added, also run `supabase/migrations/002_profile_photos_storage.sql`.
-4. Confirm that the migration created a public Storage bucket named `profile-photos`.
-5. Confirm that the migration created a private Storage bucket named `verification-documents`.
-6. Store public tutor photos under `profile-photos/{auth_user_id}/filename`.
-7. Store private verification files under `verification-documents/{tutor_profile_id}/filename`.
-8. Keep verification document URLs out of public pages. Generate signed URLs only for the owning tutor and admins.
-9. Add the environment variables above to Vercel.
+4. For existing Supabase projects that already ran the first migrations before email logs were added, also run `supabase/migrations/003_email_logs.sql`.
+5. Confirm that the migration created a public Storage bucket named `profile-photos`.
+6. Confirm that the migration created a private Storage bucket named `verification-documents`.
+7. Confirm that the migration created an admin-only `email_logs` table.
+8. Store public tutor photos under `profile-photos/{auth_user_id}/filename`.
+9. Store private verification files under `verification-documents/{tutor_profile_id}/filename`.
+10. Keep verification document URLs out of public pages. Generate signed URLs only for the owning tutor and admins.
+11. Add the environment variables above to Vercel.
 
 The migration creates RLS policies for:
 
@@ -78,6 +80,7 @@ do update set role = 'admin', email = excluded.email;
 - Submitted profiles are set to `pending`.
 - Public directory pages only show `published` profiles.
 - Admins approve, reject or suspend profiles in `/admin/tutors`.
+- Admins can view transactional email attempts in `/admin/email-logs`.
 - Parents submit enquiries on `/tutor/[slug]`.
 - Enquiries are stored in Supabase and copied to email where Resend is configured.
 

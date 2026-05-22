@@ -1,4 +1,4 @@
-import { ClipboardCheck, Inbox, Users } from "lucide-react";
+import { ClipboardCheck, Inbox, Mail, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button, LinkButton, Panel, inputClass } from "@/components/ui";
 import { requireAdmin } from "@/lib/auth";
@@ -47,6 +47,14 @@ export default async function AdminDashboardPage({
             {enquiries.length} {enquiries.length === 1 ? "enquiry" : "enquiries"} recorded.
           </p>
           <LinkButton href="/admin/enquiries" className="mt-5" variant="secondary">Manage enquiries</LinkButton>
+        </Panel>
+        <Panel className="lg:col-span-4">
+          <Mail className="size-7 text-leaf-700" aria-hidden />
+          <h2 className="mt-3 text-xl font-bold">Email logs</h2>
+          <p className="mt-2 text-sm text-slate-600">
+            View account, profile review and enquiry email attempts sent by TuitionList.
+          </p>
+          <LinkButton href="/admin/email-logs" className="mt-5" variant="secondary">View email logs</LinkButton>
         </Panel>
         <Panel className="lg:col-span-4">
           <h2 className="text-xl font-bold text-navy-900">Search tutors</h2>
