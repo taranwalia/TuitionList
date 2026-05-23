@@ -482,6 +482,7 @@ insert into public.subjects (name, slug) values
 ('German', 'german'),
 ('Business Studies', 'business-studies'),
 ('Economics', 'economics'),
+('Politics', 'politics'),
 ('Psychology', 'psychology'),
 ('Sociology', 'sociology'),
 ('Religious Studies', 'religious-studies'),
@@ -504,6 +505,8 @@ insert into public.levels (name, slug) values
 ('IGCSE', 'igcse'),
 ('A-Level', 'a-level'),
 ('University', 'university'),
+('Adult Learner', 'adult-learner'),
+('Degree Level', 'degree-level'),
 ('Adult learning', 'adult-learning'),
 ('Functional Skills', 'functional-skills'),
 ('SEN support', 'sen-support')
