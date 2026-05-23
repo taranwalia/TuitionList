@@ -87,7 +87,7 @@ export default async function AdminTutorEditPage({
                 <input name="county" required className={inputClass} defaultValue={tutor.county} />
               </Field>
               <Field label="Postcode first part">
-                <input name="postcodeArea" required className={inputClass} placeholder="SW1A" defaultValue={tutor.postcode_area} />
+                <input name="postcodeArea" required maxLength={4} className={inputClass} placeholder="SW1A" defaultValue={tutor.postcode_area} />
               </Field>
               <Field label="Minimum hourly rate">
                 <input name="minRate" required type="number" min="0" className={inputClass} defaultValue={tutor.min_rate} />

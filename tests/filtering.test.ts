@@ -13,6 +13,7 @@ describe("outwardPostcode", () => {
   it("shows only the outward code for public postcode display", () => {
     expect(outwardPostcode("SW1A 2AA")).toBe("SW1A");
     expect(outwardPostcode("OX13 5AA")).toBe("OX13");
+    expect(outwardPostcode("SW1A2AA")).toBe("SW1A");
     expect(outwardPostcode("ME5")).toBe("ME5");
     expect(outwardPostcode("b13 8ab")).toBe("B13");
   });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { outwardPostcode } from "@/lib/utils";
 
 export const enquirySchema = z.object({
   tutorId: z.string().min(1),
@@ -23,7 +24,10 @@ export const tutorProfileSchema = z.object({
   phone: z.string().optional(),
   town: z.string().min(2),
   county: z.string().min(2),
-  postcodeArea: z.string().min(2).max(8),
+  postcodeArea: z.preprocess(
+    (value) => outwardPostcode(String(value ?? "")),
+    z.string().min(2, "Please enter the first part of the postcode.").max(4, "Postcode area must be 4 characters or fewer.")
+  ),
   onlineAvailable: z.coerce.boolean().default(false),
   inPersonAvailable: z.coerce.boolean().default(false),
   willingToTravel: z.coerce.boolean().default(false),

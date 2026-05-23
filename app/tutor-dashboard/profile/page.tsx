@@ -66,7 +66,7 @@ export default async function TutorProfileEditPage({
                 <input name="county" required className={inputClass} defaultValue={profile?.county ?? ""} />
               </Field>
               <Field label="Postcode first part">
-                <input name="postcodeArea" required className={inputClass} placeholder="ME5" defaultValue={profile?.postcode_area ?? ""} />
+                <input name="postcodeArea" required maxLength={4} className={inputClass} placeholder="ME5" defaultValue={profile?.postcode_area ?? ""} />
               </Field>
               <Field label="Minimum hourly rate">
                 <input name="minRate" required type="number" min="0" className={inputClass} defaultValue={profile?.min_rate ?? ""} />
