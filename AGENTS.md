@@ -131,6 +131,56 @@ Use:
 - Resend for transactional emails
 - Vercel deployment
 
+## Live project handover
+
+Use this section when continuing TuitionList work from another PC or a fresh Codex session.
+
+Source control and deployment:
+
+- GitHub repository: `https://github.com/taranwalia/TuitionList.git`
+- Production deployment is on Vercel and deploys from the GitHub `main` branch.
+- Live domains are `https://www.tuitionlist.co.uk` and `https://tuitionlist.co.uk`.
+- The domain is proxied through Cloudflare.
+- Do not commit `.env` files, API keys, database passwords, Supabase service role keys, or Resend API keys.
+- Commit and push intentional changes to `main` unless the user asks for a branch or pull request.
+
+Connected services:
+
+- Supabase project ref: `aovuungrkmwnpkqrrhfa`.
+- Supabase is used for Auth, Postgres, RLS, and Storage.
+- Vercel is used for production hosting.
+- Resend is used for transactional app emails.
+- Email logs are stored in the `email_logs` table and are visible in the admin email logs page.
+
+Important operational notes:
+
+- Apply Supabase schema changes through migrations in `supabase/migrations`.
+- If a migration affects the live app, apply it to the live Supabase project as well as committing the migration file.
+- After schema changes, run a quick Supabase query to verify the live database state where possible.
+- Keep `supabase/migrations/001_initial_schema.sql` aligned for fresh project setup, but add new changes as separate numbered migrations.
+- Tutor profile approval emails must be idempotent: do not send approval, rejection, or suspension emails repeatedly when the status has not actually changed.
+- Moderation buttons should show a pending state and prevent repeated clicks where possible.
+- Public tutor profiles must only expose outward postcode areas, capped to 4 characters, such as `ME5`, `B13`, `SW1A`, or `OX13`.
+- `full_name` is private/admin-facing profile data; `display_name` is the public name shown on cards and profile pages.
+- Subject and level dropdown values must exist in both the app constants and the Supabase lookup tables, otherwise submitted profile subjects/levels may not link correctly.
+
+Local setup from another PC:
+
+1. Clone `https://github.com/taranwalia/TuitionList.git`.
+2. Run `npm install`.
+3. Copy `.env.example` to `.env.local` and fill in Supabase, Resend, and site URL values from the live project settings.
+4. Run `npm run test`.
+5. Run `npm run build`.
+6. Run `npm run dev` for local testing.
+
+Useful checks before finishing work:
+
+- `npm run test`
+- `npm run build`
+- Check affected pages in the browser when UI changes are made.
+- Check Vercel deployment status after pushing to GitHub.
+- For Supabase changes, verify the migration is applied and that RLS/privacy expectations still hold.
+
 ## Coding standards
 
 - Use TypeScript throughout.
