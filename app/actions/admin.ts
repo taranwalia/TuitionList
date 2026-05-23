@@ -19,10 +19,11 @@ export async function moderateTutor(formData: FormData) {
   const status = action === "approve" ? "published" : action === "reject" ? "rejected" : action === "suspend" ? "suspended" : null;
   if (!tutorId || !status) redirect(`${safeReturnTo}?error=Invalid moderation action`);
 
-  const { supabase } = await requireAdmin();
+  await requireAdmin();
+  const adminSupabase = createSupabaseAdminClient();
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await adminSupabase
       .from("tutor_profiles")
       .update({
         status,
@@ -30,24 +31,27 @@ export async function moderateTutor(formData: FormData) {
         approved_at: status === "published" ? new Date().toISOString() : null
       })
       .eq("id", tutorId)
+      .neq("status", status)
       .select("display_name, user_id")
-      .single();
+      .maybeSingle();
     if (error) throw error;
 
-    const { data: owner } = await supabase.from("profiles").select("email").eq("auth_user_id", data.user_id).single();
-    const email = owner?.email;
-    if (email) {
-      const template =
-        status === "published"
-          ? profileApprovedEmail(data.display_name)
-          : status === "rejected"
-            ? profileRejectedEmail(data.display_name, rejectionReason)
-            : profileSuspendedEmail(data.display_name);
+    if (data) {
+      const { data: owner } = await adminSupabase.from("profiles").select("email").eq("auth_user_id", data.user_id).single();
+      const email = owner?.email;
+      if (email) {
+        const template =
+          status === "published"
+            ? profileApprovedEmail(data.display_name)
+            : status === "rejected"
+              ? profileRejectedEmail(data.display_name, rejectionReason)
+              : profileSuspendedEmail(data.display_name);
 
-      await sendEmail({
-        to: email,
-        ...template
-      });
+        await sendEmail({
+          to: email,
+          ...template
+        });
+      }
     }
   } catch {
     if (!canUseDemoData()) redirect(`${safeReturnTo}?error=Unable to update tutor status.`);
@@ -152,6 +156,7 @@ export async function updateTutorProfileAsAdmin(formData: FormData) {
       .from("tutor_profiles")
       .update({
         display_name: profileInput.displayName,
+        full_name: profileInput.fullName,
         town: profileInput.town,
         county: profileInput.county,
         postcode_area: profileInput.postcodeArea.toUpperCase(),

@@ -17,6 +17,7 @@ create table public.profiles (
 create table public.tutor_profiles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null unique references auth.users(id) on delete cascade,
+  full_name text,
   display_name text not null,
   slug text not null unique,
   phone text,

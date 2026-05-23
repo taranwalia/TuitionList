@@ -72,10 +72,11 @@ export default async function AdminTutorEditPage({
                 <span className="text-xs font-normal text-slate-500">Profile photo changes can still be made by the tutor from their dashboard.</span>
               </Field>
               <Field label="Full name">
-                <input name="fullName" required className={inputClass} defaultValue={tutor.display_name} />
+                <input name="fullName" required className={inputClass} defaultValue={tutor.full_name ?? tutor.display_name} />
               </Field>
               <Field label="Display name">
                 <input name="displayName" required className={inputClass} defaultValue={tutor.display_name} />
+                <p className="text-xs font-normal text-slate-500">This is the public name shown under the tutor's profile photo.</p>
               </Field>
               <Field label="Phone number optional/private">
                 <input name="phone" className={inputClass} defaultValue={tutor.phone ?? ""} />

@@ -51,10 +51,11 @@ export default async function TutorProfileEditPage({
                 <input name="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" className={inputClass} />
               </Field>
               <Field label="Full name">
-                <input name="fullName" required className={inputClass} defaultValue={profile?.display_name ?? ""} />
+                <input name="fullName" required className={inputClass} defaultValue={profile?.full_name ?? profile?.display_name ?? ""} />
               </Field>
               <Field label="Display name">
                 <input name="displayName" required className={inputClass} defaultValue={profile?.display_name ?? ""} />
+                <p className="text-xs font-normal text-slate-500">This is the public name shown under your profile photo.</p>
               </Field>
               <Field label="Phone number optional/private">
                 <input name="phone" className={inputClass} defaultValue={profile?.phone ?? ""} />

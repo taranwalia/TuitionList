@@ -78,6 +78,7 @@ export async function submitTutorProfile(formData: FormData) {
       .upsert(
         {
           user_id: user.id,
+          full_name: profileInput.fullName,
           display_name: displayName,
           slug,
           town: profileInput.town,

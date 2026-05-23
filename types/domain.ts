@@ -9,6 +9,7 @@ export type ContactPreference = "enquiry_only" | "email_visible" | "phone_visibl
 export type TutorProfile = {
   id: string;
   user_id?: string;
+  full_name?: string | null;
   display_name: string;
   slug: string;
   town: string;

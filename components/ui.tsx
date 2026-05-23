@@ -14,6 +14,7 @@ export function Button({
         variant === "primary" && "bg-navy-900 text-white shadow-soft hover:bg-navy-800",
         variant === "secondary" && "border border-navy-200 bg-white text-navy-900 hover:border-navy-300 hover:bg-sky-50",
         variant === "ghost" && "text-navy-800 hover:bg-navy-50",
+        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60",
         className
       )}
       {...props}

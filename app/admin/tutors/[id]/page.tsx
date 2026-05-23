@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { MapPin, Monitor, Phone, Users } from "lucide-react";
 import { deleteTutorAccount, moderateTutor, updateTutorChecks } from "@/app/actions/admin";
+import { SubmitButton } from "@/components/forms/submit-button";
 import { Badge, Button, LinkButton, Panel } from "@/components/ui";
 import { TrustBadges } from "@/components/profile/trust-badges";
 import { requireAdmin } from "@/lib/auth";
@@ -61,6 +62,7 @@ export default async function AdminTutorDetailPage({
               )}
             </div>
             <div className="grid gap-3">
+              {tutor.full_name ? <p className="text-sm font-medium text-slate-700">Full name: {tutor.full_name}</p> : null}
               <p className="flex flex-wrap gap-3 text-sm text-slate-600">
                 {tutor.admin_email ? (
                   <span className="inline-flex items-center gap-1">
@@ -183,15 +185,15 @@ export default async function AdminTutorDetailPage({
               <input type="hidden" name="returnTo" value={`/admin/tutors/${tutor.id}`} />
               <textarea name="rejectionReason" placeholder="Reason if rejecting" className="min-h-24 rounded-md border border-slate-300 px-3 py-2 text-sm" />
               <div className="flex flex-wrap gap-2">
-                <Button name="action" value="approve" type="submit">
+                <SubmitButton name="action" value="approve" type="submit" pendingChildren="Approving...">
                   Approve
-                </Button>
-                <Button name="action" value="reject" type="submit" variant="secondary">
+                </SubmitButton>
+                <SubmitButton name="action" value="reject" type="submit" variant="secondary" pendingChildren="Rejecting...">
                   Reject
-                </Button>
-                <Button name="action" value="suspend" type="submit" variant="secondary">
+                </SubmitButton>
+                <SubmitButton name="action" value="suspend" type="submit" variant="secondary" pendingChildren="Suspending...">
                   Suspend
-                </Button>
+                </SubmitButton>
               </div>
             </form>
           </Panel>

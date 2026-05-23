@@ -1,4 +1,5 @@
 import { moderateTutor, updateTutorChecks } from "@/app/actions/admin";
+import { SubmitButton } from "@/components/forms/submit-button";
 import { Badge, Button, LinkButton, Panel, inputClass } from "@/components/ui";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminTutors } from "@/lib/tutors";
@@ -79,9 +80,9 @@ export default async function ManageTutorsPage({
             <input type="hidden" name="tutorId" value={tutor.id} />
             <textarea name="rejectionReason" placeholder="Reason if rejecting" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
             <div className="flex flex-wrap gap-2">
-              <Button name="action" value="approve" type="submit">Approve</Button>
-              <Button name="action" value="reject" type="submit" variant="secondary">Reject</Button>
-              <Button name="action" value="suspend" type="submit" variant="secondary">Suspend</Button>
+              <SubmitButton name="action" value="approve" type="submit" pendingChildren="Approving...">Approve</SubmitButton>
+              <SubmitButton name="action" value="reject" type="submit" variant="secondary" pendingChildren="Rejecting...">Reject</SubmitButton>
+              <SubmitButton name="action" value="suspend" type="submit" variant="secondary" pendingChildren="Suspending...">Suspend</SubmitButton>
             </div>
           </form>
           <form action={updateTutorChecks} className="grid gap-2 text-sm">

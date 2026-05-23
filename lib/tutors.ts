@@ -8,6 +8,7 @@ import { filterTutors } from "@/lib/utils";
 const profileSelect = `
   id,
   user_id,
+  full_name,
   display_name,
   slug,
   town,

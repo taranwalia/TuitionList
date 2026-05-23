@@ -1,6 +1,7 @@
 import { moderateTutor } from "@/app/actions/admin";
 import { TutorCard } from "@/components/directory/tutor-card";
-import { Button, LinkButton, Panel } from "@/components/ui";
+import { SubmitButton } from "@/components/forms/submit-button";
+import { LinkButton, Panel } from "@/components/ui";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminTutors } from "@/lib/tutors";
 
@@ -25,9 +26,9 @@ export default async function PendingTutorsPage() {
                 </LinkButton>
                 <form action={moderateTutor} className="flex flex-wrap gap-2">
                   <input type="hidden" name="tutorId" value={tutor.id} />
-                  <Button name="action" value="approve" type="submit">Approve</Button>
-                  <Button name="action" value="reject" type="submit" variant="secondary">Reject</Button>
-                  <Button name="action" value="suspend" type="submit" variant="secondary">Suspend</Button>
+                  <SubmitButton name="action" value="approve" type="submit" pendingChildren="Approving...">Approve</SubmitButton>
+                  <SubmitButton name="action" value="reject" type="submit" variant="secondary" pendingChildren="Rejecting...">Reject</SubmitButton>
+                  <SubmitButton name="action" value="suspend" type="submit" variant="secondary" pendingChildren="Suspending...">Suspend</SubmitButton>
                 </form>
               </div>
             </Panel>
