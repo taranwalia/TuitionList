@@ -59,6 +59,37 @@ const profileSelect = `
   tutor_levels ( levels ( name ) )
 `;
 
+const baseProfileSelect = `
+  id,
+  user_id,
+  full_name,
+  display_name,
+  slug,
+  town,
+  county,
+  postcode_area,
+  online_available,
+  in_person_available,
+  willing_to_travel,
+  min_rate,
+  max_rate,
+  short_bio,
+  long_bio,
+  experience,
+  profile_photo_url,
+  website_url,
+  linkedin_url,
+  phone,
+  show_phone,
+  show_email,
+  show_whatsapp,
+  status,
+  rejection_reason,
+  submitted_at,
+  approved_at,
+  created_at
+`;
+
 const PUBLIC_QUERY_TIMEOUT_MS = 6000;
 
 type RawTutor = Omit<TutorProfile, "subjects" | "levels" | "checks" | "qualifications"> & {
@@ -67,6 +98,8 @@ type RawTutor = Omit<TutorProfile, "subjects" | "levels" | "checks" | "qualifica
   tutor_subjects?: { subjects: { name: string } | { name: string }[] | null }[] | null;
   tutor_levels?: { levels: { name: string } | { name: string }[] | null }[] | null;
 };
+
+type RawBaseTutor = Omit<TutorProfile, "subjects" | "levels" | "checks" | "qualifications">;
 
 type PublicCheckRow = NonNullable<TutorProfile["checks"]> & {
   tutor_id: string;
@@ -222,10 +255,47 @@ export async function getAdminTutorById(id: string) {
 export async function getTutorDashboardProfile(userId: string) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase.from("tutor_profiles").select(profileSelect).eq("user_id", userId).maybeSingle();
+    const { data, error } = await supabase.from("tutor_profiles").select(baseProfileSelect).eq("user_id", userId).maybeSingle();
     if (error) throw error;
-    return data ? mapRawTutor(data as unknown as RawTutor) : null;
-  } catch {
+    if (!data) return null;
+
+    const profile: TutorProfile = {
+      ...(data as unknown as RawBaseTutor),
+      subjects: [],
+      levels: [],
+      qualifications: []
+    };
+
+    const [subjectsResult, levelsResult, qualificationsResult] = await Promise.allSettled([
+      supabase.from("tutor_subjects").select("subjects ( name )").eq("tutor_id", profile.id),
+      supabase.from("tutor_levels").select("levels ( name )").eq("tutor_id", profile.id),
+      supabase.from("qualifications").select("id,title,institution,year,description,admin_checked").eq("tutor_id", profile.id)
+    ]);
+
+    if (subjectsResult.status === "fulfilled" && !subjectsResult.value.error) {
+      profile.subjects =
+        (subjectsResult.value.data as { subjects: { name: string } | { name: string }[] | null }[] | null)?.flatMap((item) =>
+          namesFromRelation(item.subjects)
+        ) ?? [];
+    }
+
+    if (levelsResult.status === "fulfilled" && !levelsResult.value.error) {
+      profile.levels =
+        (levelsResult.value.data as { levels: { name: string } | { name: string }[] | null }[] | null)?.flatMap((item) =>
+          namesFromRelation(item.levels)
+        ) ?? [];
+    }
+
+    if (qualificationsResult.status === "fulfilled" && !qualificationsResult.value.error) {
+      profile.qualifications = qualificationsResult.value.data ?? [];
+    }
+
+    return profile;
+  } catch (error) {
+    console.error("Tutor dashboard profile failed to load.", {
+      userId,
+      message: error instanceof Error ? error.message : "Unknown error"
+    });
     return null;
   }
 }
