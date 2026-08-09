@@ -1,5 +1,9 @@
 import { z } from "zod";
+import { LEVELS, SUBJECTS } from "@/lib/constants";
 import { outwardPostcode } from "@/lib/utils";
+
+const subjectOptions = new Set<string>(SUBJECTS);
+const levelOptions = new Set<string>(LEVELS);
 
 export const enquirySchema = z.object({
   tutorId: z.string().min(1),
@@ -47,6 +51,12 @@ export const tutorProfileSchema = z.object({
   showEmail: z.coerce.boolean().default(false),
   showPhone: z.coerce.boolean().default(false),
   showWhatsapp: z.coerce.boolean().default(false)
+}).refine((data) => data.subjects.every((subject) => subjectOptions.has(subject)), {
+  message: "Please choose subjects from the list.",
+  path: ["subjects"]
+}).refine((data) => data.levels.every((level) => levelOptions.has(level)), {
+  message: "Please choose levels from the list.",
+  path: ["levels"]
 }).refine((data) => data.onlineAvailable || data.inPersonAvailable, {
   message: "Please choose online, in-person, or both.",
   path: ["onlineAvailable"]

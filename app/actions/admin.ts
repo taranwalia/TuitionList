@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { canUseDemoData } from "@/lib/demo-mode";
 import { sendEmail } from "@/lib/email";
 import { accountDeletedEmail, profileApprovedEmail, profileRejectedEmail, profileSuspendedEmail } from "@/lib/email-templates";
+import { getOrCreateLookupRows } from "@/lib/profile-lookups";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { tutorProfileSchema } from "@/lib/validation";
 
@@ -185,18 +186,16 @@ export async function updateTutorProfileAsAdmin(formData: FormData) {
     if (deleteSubjects.error) throw deleteSubjects.error;
     if (deleteLevels.error) throw deleteLevels.error;
 
-    const [{ data: subjectRows, error: subjectError }, { data: levelRows, error: levelError }] = await Promise.all([
-      adminSupabase.from("subjects").select("id,name").in("name", profileInput.subjects),
-      adminSupabase.from("levels").select("id,name").in("name", profileInput.levels)
+    const [subjectRows, levelRows] = await Promise.all([
+      getOrCreateLookupRows(adminSupabase, "subjects", profileInput.subjects),
+      getOrCreateLookupRows(adminSupabase, "levels", profileInput.levels)
     ]);
-    if (subjectError) throw subjectError;
-    if (levelError) throw levelError;
 
     const [insertSubjects, insertLevels] = await Promise.all([
-      subjectRows?.length
+      subjectRows.length
         ? adminSupabase.from("tutor_subjects").insert(subjectRows.map((subject) => ({ tutor_id: tutorId, subject_id: subject.id })))
         : Promise.resolve(),
-      levelRows?.length
+      levelRows.length
         ? adminSupabase.from("tutor_levels").insert(levelRows.map((level) => ({ tutor_id: tutorId, level_id: level.id })))
         : Promise.resolve()
     ]);

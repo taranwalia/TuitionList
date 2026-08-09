@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { canUseDemoData } from "@/lib/demo-mode";
 import { parseEmailRecipients, sendEmail } from "@/lib/email";
 import { adminProfileSubmittedEmail, profileSubmittedEmail } from "@/lib/email-templates";
+import { getOrCreateLookupRows } from "@/lib/profile-lookups";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
@@ -114,18 +115,17 @@ export async function submitTutorProfile(formData: FormData) {
     if (deleteSubjects.error) throw deleteSubjects.error;
     if (deleteLevels.error) throw deleteLevels.error;
 
-    const [{ data: subjectRows, error: subjectError }, { data: levelRows, error: levelError }] = await Promise.all([
-      supabase.from("subjects").select("id,name").in("name", subjects),
-      supabase.from("levels").select("id,name").in("name", levels)
+    const lookupSupabase = createSupabaseAdminClient();
+    const [subjectRows, levelRows] = await Promise.all([
+      getOrCreateLookupRows(lookupSupabase, "subjects", subjects),
+      getOrCreateLookupRows(lookupSupabase, "levels", levels)
     ]);
-    if (subjectError) throw subjectError;
-    if (levelError) throw levelError;
 
     const [insertSubjects, insertLevels] = await Promise.all([
-      subjectRows?.length
+      subjectRows.length
         ? supabase.from("tutor_subjects").insert(subjectRows.map((subject) => ({ tutor_id: profile.id, subject_id: subject.id })))
         : Promise.resolve(),
-      levelRows?.length
+      levelRows.length
         ? supabase.from("tutor_levels").insert(levelRows.map((level) => ({ tutor_id: profile.id, level_id: level.id })))
         : Promise.resolve()
     ]);

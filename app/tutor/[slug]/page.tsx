@@ -196,12 +196,12 @@ export default async function TutorProfilePage({
 
           <Panel>
             <h2 className="text-2xl font-bold text-navy-900">About</h2>
-            <p className="mt-4 leading-7 text-slate-700">{tutor.long_bio}</p>
+            <p className="mt-4 whitespace-pre-wrap leading-7 text-slate-700">{tutor.long_bio}</p>
           </Panel>
 
           <Panel>
             <h2 className="text-2xl font-bold text-navy-900">Experience</h2>
-            <p className="mt-4 leading-7 text-slate-700">{tutor.experience}</p>
+            <p className="mt-4 whitespace-pre-wrap leading-7 text-slate-700">{tutor.experience}</p>
           </Panel>
 
           <Panel>
@@ -214,7 +214,7 @@ export default async function TutorProfilePage({
                     <p className="text-sm text-slate-600">
                       {[qualification.institution, qualification.year].filter(Boolean).join(" · ")}
                     </p>
-                    {qualification.description ? <p className="mt-2 text-sm text-slate-700">{qualification.description}</p> : null}
+                    {qualification.description ? <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700">{qualification.description}</p> : null}
                     <p className="mt-2 text-xs font-medium text-slate-500">
                       {qualification.admin_checked ? "Qualification seen by TuitionList" : "Self-declared by tutor"}
                     </p>
