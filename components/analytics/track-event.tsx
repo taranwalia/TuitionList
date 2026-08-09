@@ -13,7 +13,10 @@ declare global {
 export function trackAnalyticsEvent(name: string, properties: AnalyticsProperties = {}) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("tuitionlist:analytics", { detail: { name, properties } }));
-  window.dataLayer?.push({ event: name, ...properties });
+  if (!window.dataLayer) window.dataLayer = [];
+  if (Array.isArray(window.dataLayer)) {
+    window.dataLayer.push({ event: name, ...properties });
+  }
 }
 
 export function TrackEvent({ name, properties = {} }: { name: string; properties?: AnalyticsProperties }) {
