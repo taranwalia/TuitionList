@@ -80,6 +80,9 @@ export type Enquiry = {
   message: string;
   consent_given: boolean;
   status: "new" | "read" | "archived";
+  withheld_from_tutor?: boolean;
+  spam_score?: number;
+  moderation_reason?: string | null;
   created_at: string;
 };
 

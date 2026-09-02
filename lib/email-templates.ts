@@ -165,6 +165,27 @@ export function parentEnquiryAdminEmail(tutorId: string, parentName: string, mes
   };
 }
 
+export function parentEnquiryHeldAdminEmail(tutorId: string, parentName: string, message: string, score: number, reasons: string[]) {
+  const reasonHtml = reasons.length
+    ? `<ul>${reasons.slice(0, 8).map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>`
+    : "<p>No specific reason was recorded.</p>";
+
+  return {
+    subject: "Enquiry held for admin review",
+    html: layout(
+      "Enquiry held for admin review",
+      `
+        <p>An enquiry for tutor profile <strong>${escapeHtml(tutorId)}</strong> was held and not sent to the tutor because it looked like marketing, research, or spam.</p>
+        <p><strong>Parent/student:</strong> ${escapeHtml(parentName)}</p>
+        <p><strong>Spam score:</strong> ${score}</p>
+        ${reasonHtml}
+        <p>${escapeHtml(message)}</p>
+        ${button("View enquiries", siteUrl("/admin/enquiries"))}
+      `
+    )
+  };
+}
+
 export function parentEnquiryConfirmationEmail() {
   return {
     subject: "Your TuitionList enquiry has been sent",

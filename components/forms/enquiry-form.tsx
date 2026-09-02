@@ -26,6 +26,10 @@ export function EnquiryForm({
       <div>
         <h2 className="text-lg font-bold leading-7 text-navy-900 sm:text-xl">Send an enquiry to {tutorName}</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">{PROFILE_DISCLAIMER}</p>
+        <p className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium leading-5 text-slate-700">
+          This form is for genuine tuition enquiries only. Marketing, research, sales, recruitment, or partnership messages may be held for admin
+          review and not sent to the tutor.
+        </p>
       </div>
       {success ? (
         <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold leading-6 text-green-800" role="status">

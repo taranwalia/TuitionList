@@ -17,6 +17,9 @@ type EnquiryRow = {
   message: string;
   consent_given: boolean;
   status: "new" | "read" | "archived";
+  withheld_from_tutor?: boolean;
+  spam_score?: number;
+  moderation_reason?: string | null;
   created_at: string;
 };
 
@@ -36,7 +39,9 @@ export async function getTutorEnquiries(userId: string) {
       .eq("tutor_id", profile.id)
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return (data as EnquiryRow[]).map(mapEnquiry);
+    return (data as EnquiryRow[])
+      .filter((enquiry) => !enquiry.withheld_from_tutor && enquiry.status !== "archived")
+      .map(mapEnquiry);
   } catch {
     return canUseDemoData() ? sampleEnquiries : [];
   }
